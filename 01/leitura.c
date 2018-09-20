@@ -2,7 +2,14 @@
 
 char nome[] = "entrada.txt";
 
-void lerDados (int *PERIODOS_ANO, int *PERIODOS, int *ESPECIES, int *TERRENOS, int **temp_proc, int ***per_plantio, int **lucratividade_especies)
+void lerDados (int *PERIODOS_ANO,
+               int *PERIODOS,
+               int *ESPECIES,
+               int *TERRENOS,
+               int **temp_proc,
+               int **demanda,
+               int ***per_plantio,
+               int **lucratividade_especies)
 {
     FILE *f;
     char trash[255];
@@ -37,6 +44,13 @@ void lerDados (int *PERIODOS_ANO, int *PERIODOS, int *ESPECIES, int *TERRENOS, i
     fscanf(f, "%s", trash);
     for (i = 0; i < *ESPECIES; i++)
         fscanf(f, "%d", &(*temp_proc)[i]);
+    
+/*****/
+    *demanda = (int *)malloc(*ESPECIES * sizeof(int));
+
+    fscanf(f, "%s", trash);
+    for (i = 0; i < *ESPECIES; i++)
+        fscanf(f, "%d", &(*demanda)[i]);
     
 /*****/
     *per_plantio = (int **)malloc(*ESPECIES * sizeof(int*));

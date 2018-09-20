@@ -17,6 +17,7 @@ void runGeneration (individuo *populacao,
                     int ESPECIES,
                     int PERIODOS_ANO,
                     int *temp_proc,
+                    int *demanda,
                     int **per_plantio)
 {
     
@@ -92,6 +93,7 @@ void runGeneration (individuo *populacao,
                   TERRENOS,
                   PERIODOS_ANO,
                   temp_proc,
+                  demanda,
                   per_plantio,
                   lucratividade_especies);
         mutation (filhos[i+1],
@@ -100,6 +102,7 @@ void runGeneration (individuo *populacao,
                   TERRENOS,
                   PERIODOS_ANO,
                   temp_proc,
+                  demanda,
                   per_plantio,
                   lucratividade_especies);
         
@@ -281,19 +284,6 @@ int individuo_aleatorio (int n)
     return i;
 }
 /*****/
-int inteiro (int a,
-             int b)
-{
-    double aux;
-    int i;
-    
-    aux = uniforme(0,1);
-    
-    i = (int)(a + aux*(b - a));
-    
-    return i;
-}
-/*****/
 void makeNewPopulation (individuo *new_population,
                         individuo *combined_group,
                         int POPULACAO,
@@ -386,6 +376,7 @@ void mutation (individuo object,
                int TERRENOS,
                int PERIODOS_ANO,
                int *temp_proc,
+               int *demanda,
                int **per_plantio,
                int *lucratividade_especies)
 {
@@ -407,6 +398,7 @@ void mutation (individuo object,
                                       PERIODOS,
                                       PERIODOS_ANO,
                                       temp_proc,
+                                      demanda,
                                       per_plantio,
                                       lucratividade_especies);
             mutated[i] = 1;
@@ -451,12 +443,4 @@ individuo torneio (individuo pai1,
             return pai2;
         }
     }
-}
-/*****/
-double uniforme (double a, double b)
-{
-    double beta, aux;
-    aux = (double)rand()/((double)RAND_MAX + 1);
-    beta = a + aux*(b - a);
-    return beta;
 }

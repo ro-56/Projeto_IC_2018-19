@@ -11,34 +11,38 @@
 typedef struct individuo
 {
     int f_obj;
+    int *demanda_n_atendida;
     int **sol;
 } individuo;
 
 individuo criarIndividuo (int PERIODOS,
-                           int ESPECIES,
-                           int TERRENOS,
-                           int *temp_proc,
-                           int **per_plantio,
-                           int PERIODOS_ANO,
-                           int *lucratividade_especies);
+                          int ESPECIES,
+                          int TERRENOS,
+                          int *temp_proc,
+                          int *demanda,
+                          int **per_plantio,
+                          int PERIODOS_ANO,
+                          int *lucratividade_especies);
 
 int createRow (int *row,
-                int ESPECIES,
-                int PERIODOS,
-                int PERIODOS_ANO,
-                int *temp_proc,
-                int **per_plantio,
-                int *lucratividade_especies);
+               int ESPECIES,
+               int PERIODOS,
+               int PERIODOS_ANO,
+               int *temp_proc,
+               int *demanda,
+               int **per_plantio,
+               int *lucratividade_especies);
 
 /*** LEITURA ***/
 
 void lerDados (int *PERIODOS_ANO, 
-                int *PERIODOS,
-                int *ESPECIES,
-                int *TERRENOS,
-                int **temp_proc,
-                int ***per_plantio,
-                int **lucratividade_especies);
+               int *PERIODOS,
+               int *ESPECIES,
+               int *TERRENOS,
+               int **temp_proc,
+               int **demanda,
+               int ***per_plantio,
+               int **lucratividade_especies);
 
 
 /*** GENETICO ***/
@@ -54,6 +58,7 @@ void runGeneration(individuo *populacao,
                    int ESPECIES,
                    int PERIODOS_ANO,
                    int *temp_proc,
+                   int *demanda,
                    int **per_plantio);
 
 /*** RESULTADOS ***/
@@ -80,3 +85,11 @@ float getAverageFObj(individuo *group,
 
 int getBestFObj(individuo *group,
                 int POPULACAO);
+
+/*** MISC ***/
+
+int inteiro(int a,
+            int b);
+
+double uniforme(double a,
+                double b);

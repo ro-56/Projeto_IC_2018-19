@@ -3,10 +3,10 @@
 #include "defs.h"
 
 #define MICRO_PER_SECOND 1000000
-#define POPULACAO 100
+#define POPULACAO 1
 #define GENERATIONS 1000
 
-int main()
+int main ()
 {
     /********************* Declaração de Variáveis ********************/
     int PERIODOS;
@@ -15,6 +15,7 @@ int main()
     int PERIODOS_ANO;
     
     int *temp_proc; // tempos de precessamento
+    int *demand;
     int *lucratividade_especies;
 
     int **per_plantio;  // intervalos de plantio [Ei,Ti]
@@ -35,12 +36,13 @@ int main()
     
     /*************************** LEITURA ******************************/
     lerDados(&PERIODOS_ANO,
-              &PERIODOS,
-              &ESPECIES,
-              &TERRENOS,
-              &temp_proc,
-              &per_plantio,
-              &lucratividade_especies);
+             &PERIODOS,
+             &ESPECIES,
+             &TERRENOS,
+             &temp_proc,
+             &demand,
+             &per_plantio,
+             &lucratividade_especies);
     
     /*************************** INIT ******************************/
     
@@ -51,43 +53,48 @@ int main()
                                       ESPECIES,
                                       TERRENOS,
                                       temp_proc,
+                                      demand,
                                       per_plantio,
                                       PERIODOS_ANO,
                                       lucratividade_especies);
     }
-        
+    
     /*************************** GENETICO ******************************/
     
-    ordenarPopulacao(populacao, POPULACAO);
-    
-    printf("Primeira Geracao");
+//    ordenarPopulacao(populacao, POPULACAO);
+//
+//    printf("Primeira Geracao");
     displayIndividuo(populacao[0],
                      PERIODOS,
                      TERRENOS);
-    displayBestFObj(populacao,
-                    POPULACAO);
-    
-    for (i = 0; i < GENERATIONS; i++)
-    {
-        runGeneration(populacao,
-                       POPULACAO,
-                       PERIODOS,
-                       TERRENOS,
-                       lucratividade_especies,
-                       ESPECIES,
-                       PERIODOS_ANO,
-                       temp_proc,
-                       per_plantio);
-    }
-    
-    printf("Ultima Geracao");
-    displayIndividuo(populacao[0],
-                     PERIODOS,
-                     TERRENOS);
-    displayBestFObj(populacao,
-                    POPULACAO);
+//    displayBestFObj(populacao,
+//                    POPULACAO);
+//
+//    for (i = 0; i < GENERATIONS; i++)
+//    {
+//        runGeneration(populacao,
+//                       POPULACAO,
+//                       PERIODOS,
+//                       TERRENOS,
+//                       lucratividade_especies,
+//                       ESPECIES,
+//                       PERIODOS_ANO,
+//                       temp_proc,
+//                       per_plantio);
+//    }
+//
+//    printf("Ultima Geracao");
+//    displayIndividuo(populacao[0],
+//                     PERIODOS,
+//                     TERRENOS);
+//    displayBestFObj(populacao,
+//                    POPULACAO);
     
     /*************************** TEST ******************************/
+    
+    
+    
+    
     
     /*************************** PRINT ******************************/
     gettimeofday(&stop_time, NULL);
@@ -97,9 +104,9 @@ int main()
 
 //    printf("%d %d %d %d\n",PERIODOS_ANO,PERIODOS,ESPECIES,TERRENOS);
 //
-//    for(i = 0; i<ESPECIES;i++)
-//        printf("%d ",temp_proc[i]);
-//    printf("\n");
+    for(i = 0; i<ESPECIES;i++)
+        printf("%d ",demand[i]);
+    printf("\n");
 //
 //    for (i = 0;i<ESPECIES;i++)
 //    {

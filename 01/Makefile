@@ -1,4 +1,4 @@
-objects = leitura.o main.o individuo.o genetic.o results.o
+objects = leitura.o main.o individuo.o genetic.o results.o misc.o
 
 
 run: $(objects)
@@ -19,8 +19,12 @@ genetic.o: genetic.c genetic.h defs.h
 results.o: results.c defs.h
 	gcc results.c -c -Wall -lm
 
+misc.o: misc.c defs.h
+	gcc misc.c -c -Wall -lm
+
 clean:
 	rm -f *.o *.gch
 
 clear:
 	rm -f Run *.o *.gch
+	clear
