@@ -11,18 +11,29 @@
 typedef struct individuo
 {
     int f_obj;
-    int *demanda_n_atendida;
+    int *demanda_atendida;
     int **sol;
 } individuo;
+
+int CalcularFuncaoObj (int PERIODOS,
+                       int TERRENOS,
+                       int *area_terreno,
+                       int *demanda,
+                       int *lucrativity,
+                       int *productivity,
+                       int **solucao,
+                       int *demanda_atendida);
 
 individuo criarIndividuo (int PERIODOS,
                           int ESPECIES,
                           int TERRENOS,
+                          int *area_terreno,
                           int *temp_proc,
                           int *demanda,
+                          int *lucrativity,
+                          int *productivity,
                           int **per_plantio,
-                          int PERIODOS_ANO,
-                          int *lucratividade_especies);
+                          int PERIODOS_ANO);
 
 int createRow (int *row,
                int ESPECIES,
@@ -30,8 +41,8 @@ int createRow (int *row,
                int PERIODOS_ANO,
                int *temp_proc,
                int *demanda,
-               int **per_plantio,
-               int *lucratividade_especies);
+               int *lucrativity,
+               int **per_plantio);
 
 /*** LEITURA ***/
 
@@ -39,10 +50,12 @@ void lerDados (int *PERIODOS_ANO,
                int *PERIODOS,
                int *ESPECIES,
                int *TERRENOS,
+               int **area_terreno,
                int **temp_proc,
                int **demanda,
-               int ***per_plantio,
-               int **lucratividade_especies);
+               int **lucrativity,
+               int **productivity,
+               int ***per_plantio);
 
 
 /*** GENETICO ***/
@@ -54,11 +67,11 @@ void runGeneration(individuo *populacao,
                    int POPULACAO,
                    int PERIODOS,
                    int TERRENOS,
-                   int *lucratividade_especies,
                    int ESPECIES,
                    int PERIODOS_ANO,
                    int *temp_proc,
                    int *demanda,
+                   int *lucrativity,
                    int **per_plantio);
 
 /*** RESULTADOS ***/

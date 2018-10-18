@@ -24,4 +24,5 @@ especies* listEspecies (int ESPECIES,
                         int *demanda,
                         int **per_plantio,
                         int last_esp,
-                        int PERIODOS_ANO);
+                        int PERIODOS_ANO,
+                        int *demanda_atendida);

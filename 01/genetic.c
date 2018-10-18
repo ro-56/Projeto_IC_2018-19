@@ -13,11 +13,11 @@ void runGeneration (individuo *populacao,
                     int POPULACAO,
                     int PERIODOS,
                     int TERRENOS,
-                    int *lucratividade_especies,
                     int ESPECIES,
                     int PERIODOS_ANO,
                     int *temp_proc,
                     int *demanda,
+                    int *lucrativity,
                     int **per_plantio)
 {
     
@@ -72,7 +72,7 @@ void runGeneration (individuo *populacao,
                        &filhos[i+1],
                        PERIODOS,
                        TERRENOS,
-                       lucratividade_especies);
+                       lucrativity);
         }
         else
         {
@@ -95,7 +95,7 @@ void runGeneration (individuo *populacao,
                   temp_proc,
                   demanda,
                   per_plantio,
-                  lucratividade_especies);
+                  lucrativity);
         mutation (filhos[i+1],
                   ESPECIES,
                   PERIODOS,
@@ -104,7 +104,7 @@ void runGeneration (individuo *populacao,
                   temp_proc,
                   demanda,
                   per_plantio,
-                  lucratividade_especies);
+                  lucrativity);
         
     }
     
@@ -142,7 +142,7 @@ void runGeneration (individuo *populacao,
 }
 
 /*************************** FUNCTIONS ******************************/
-
+    //TODO: Retirar essa funcao e colocar a ja existende em individuos.
 int calcularNovaFObj (individuo solucao,
                       int PERIODOS,
                       int TERRENOS,
@@ -399,8 +399,8 @@ void mutation (individuo object,
                                       PERIODOS_ANO,
                                       temp_proc,
                                       demanda,
-                                      per_plantio,
-                                      lucratividade_especies);
+                                      lucratividade_especies,
+                                      per_plantio);
             mutated[i] = 1;
             mutations++;
         }

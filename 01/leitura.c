@@ -1,24 +1,26 @@
 #include "defs.h"
 
-char nome[] = "entrada.txt";
+char name[] = "entrada.txt";
 
 void lerDados (int *PERIODOS_ANO,
                int *PERIODOS,
                int *ESPECIES,
                int *TERRENOS,
+               int **area_terreno,
                int **temp_proc,
                int **demanda,
-               int ***per_plantio,
-               int **lucratividade_especies)
+               int **lucrativity,
+               int **productivity,
+               int ***per_plantio)
 {
     FILE *f;
     char trash[255];
     int i, j;
     
-    f = fopen(nome, "r");
+    f = fopen(name, "r");
     if (f == NULL)
     {
-        perror(nome);
+        perror(name);
         exit (1);
     }
     
@@ -39,6 +41,13 @@ void lerDados (int *PERIODOS_ANO,
     fscanf(f, "%d", TERRENOS);
     
 /*****/
+    *area_terreno = (int *)malloc(*TERRENOS * sizeof(int));
+    
+    fscanf(f, "%s", trash);
+    for (i = 0; i < *TERRENOS; i++)
+        fscanf(f, "%d", &(*area_terreno)[i]);
+    
+/*****/
     *temp_proc = (int *)malloc(*ESPECIES * sizeof(int));
     
     fscanf(f, "%s", trash);
@@ -53,6 +62,20 @@ void lerDados (int *PERIODOS_ANO,
         fscanf(f, "%d", &(*demanda)[i]);
     
 /*****/
+*lucrativity = (int *)malloc(*ESPECIES * sizeof(int));
+
+fscanf(f, "%s", trash);
+for (i = 0; i < *ESPECIES; i++)
+    fscanf(f, "%d", &(*lucrativity)[i]);
+
+/*****/
+    *productivity = (int *)malloc(*ESPECIES * sizeof(int));
+    
+    fscanf(f, "%s", trash);
+    for (i = 0; i < *ESPECIES; i++)
+        fscanf(f, "%d", &(*productivity)[i]);
+    
+/*****/
     *per_plantio = (int **)malloc(*ESPECIES * sizeof(int*));
     for(i = 0; i < *ESPECIES; i++)
         (*per_plantio)[i] = (int *)malloc(2 * sizeof(int));
@@ -65,13 +88,7 @@ void lerDados (int *PERIODOS_ANO,
             fscanf(f, "%d", &(*per_plantio)[i][j]);
         }
     }
-    
 /*****/
-    *lucratividade_especies = (int *)malloc(*ESPECIES * sizeof(int));
-    
-    fscanf(f, "%s", trash);
-    for (i = 0; i < *ESPECIES; i++)
-        fscanf(f, "%d", &(*lucratividade_especies)[i]);
     
     
     fclose(f);

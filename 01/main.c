@@ -4,7 +4,7 @@
 
 #define MICRO_PER_SECOND 1000000
 #define POPULACAO 1
-#define GENERATIONS 1000
+#define GENERATIONS 5
 
 int main ()
 {
@@ -14,9 +14,11 @@ int main ()
     int TERRENOS;
     int PERIODOS_ANO;
     
+    int *area_terreno;
     int *temp_proc; // tempos de precessamento
-    int *demand;
-    int *lucratividade_especies;
+    int *demanda;
+    int *productivity;
+    int *lucrativity;
 
     int **per_plantio;  // intervalos de plantio [Ei,Ti]
     
@@ -39,29 +41,34 @@ int main ()
              &PERIODOS,
              &ESPECIES,
              &TERRENOS,
+             &area_terreno,
              &temp_proc,
-             &demand,
-             &per_plantio,
-             &lucratividade_especies);
+             &demanda,
+             &lucrativity,
+             &productivity,
+             &per_plantio);
     
     /*************************** INIT ******************************/
     
+//    printf("==  %d  ==",area_terreno[3]);
     populacao = (individuo *)malloc(POPULACAO * sizeof(individuo));
     for (i = 0; i < POPULACAO; i++)
     {
         populacao[i] = criarIndividuo(PERIODOS,
                                       ESPECIES,
                                       TERRENOS,
+                                      area_terreno,
                                       temp_proc,
-                                      demand,
+                                      demanda,
+                                      lucrativity,
+                                      productivity,
                                       per_plantio,
-                                      PERIODOS_ANO,
-                                      lucratividade_especies);
+                                      PERIODOS_ANO);
     }
     
     /*************************** GENETICO ******************************/
     
-//    ordenarPopulacao(populacao, POPULACAO);
+    ordenarPopulacao(populacao, POPULACAO);
 //
 //    printf("Primeira Geracao");
     displayIndividuo(populacao[0],
@@ -70,18 +77,19 @@ int main ()
 //    displayBestFObj(populacao,
 //                    POPULACAO);
 //
-//    for (i = 0; i < GENERATIONS; i++)
-//    {
-//        runGeneration(populacao,
-//                       POPULACAO,
-//                       PERIODOS,
-//                       TERRENOS,
-//                       lucratividade_especies,
-//                       ESPECIES,
-//                       PERIODOS_ANO,
-//                       temp_proc,
-//                       per_plantio);
-//    }
+    for (i = 0; i < GENERATIONS; i++)
+    {
+        runGeneration(populacao,
+                      POPULACAO,
+                      PERIODOS,
+                      TERRENOS,
+                      ESPECIES,
+                      PERIODOS_ANO,
+                      temp_proc,
+                      demanda,
+                      lucrativity,
+                      per_plantio);
+    }
 //
 //    printf("Ultima Geracao");
 //    displayIndividuo(populacao[0],
@@ -104,9 +112,9 @@ int main ()
 
 //    printf("%d %d %d %d\n",PERIODOS_ANO,PERIODOS,ESPECIES,TERRENOS);
 //
-    for(i = 0; i<ESPECIES;i++)
-        printf("%d ",demand[i]);
-    printf("\n");
+//    for(i = 0; i<ESPECIES;i++)
+//        printf("%d ",demanda[i]);
+//    printf("\n");
 //
 //    for (i = 0;i<ESPECIES;i++)
 //    {
@@ -119,7 +127,7 @@ int main ()
 //
 //    for (i = 0;i<ESPECIES;i++)
 //    {
-//        printf("%d ",lucratividade_especies[i]);
+//        printf("%d ",lucrativity[i]);
 //    }
 //    printf("\n");
 //
