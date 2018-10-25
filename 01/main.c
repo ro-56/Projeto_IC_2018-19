@@ -3,8 +3,8 @@
 #include "defs.h"
 
 #define MICRO_PER_SECOND 1000000
-#define POPULACAO 1
-#define GENERATIONS 5
+#define POPULACAO 50
+#define GENERATIONS 1000
 
 int main ()
 {
@@ -50,7 +50,6 @@ int main ()
     
     /*************************** INIT ******************************/
     
-//    printf("==  %d  ==",area_terreno[3]);
     populacao = (individuo *)malloc(POPULACAO * sizeof(individuo));
     for (i = 0; i < POPULACAO; i++)
     {
@@ -70,12 +69,12 @@ int main ()
     
     ordenarPopulacao(populacao, POPULACAO);
 //
-//    printf("Primeira Geracao");
+    printf("Primeira Geracao");
     displayIndividuo(populacao[0],
                      PERIODOS,
                      TERRENOS);
-//    displayBestFObj(populacao,
-//                    POPULACAO);
+    displayBestFObj(populacao,
+                    POPULACAO);
 //
     for (i = 0; i < GENERATIONS; i++)
     {
@@ -85,24 +84,25 @@ int main ()
                       TERRENOS,
                       ESPECIES,
                       PERIODOS_ANO,
+                      area_terreno,
                       temp_proc,
                       demanda,
                       lucrativity,
+                      productivity,
                       per_plantio);
     }
 //
-//    printf("Ultima Geracao");
-//    displayIndividuo(populacao[0],
-//                     PERIODOS,
-//                     TERRENOS);
-//    displayBestFObj(populacao,
-//                    POPULACAO);
-    
+    printf("Ultima Geracao");
+    displayIndividuo (populacao[0],
+                      PERIODOS,
+                      TERRENOS);
+    displayBestFObj (populacao,
+                     POPULACAO);
+    displayDemandaAtendida (populacao[0],
+                            ESPECIES);
     /*************************** TEST ******************************/
     
-    
-    
-    
+//    graphBest ();
     
     /*************************** PRINT ******************************/
     gettimeofday(&stop_time, NULL);

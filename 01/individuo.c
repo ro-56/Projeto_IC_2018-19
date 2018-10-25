@@ -1,7 +1,7 @@
 #include "defs.h"
 #include "individuo.h"
 
-#define PENALIDADE_DEMANDA 30
+#define PENALIDADE_DEMANDA 400
 
 individuo criarIndividuo(int PERIODOS,
                          int ESPECIES,
@@ -15,9 +15,9 @@ individuo criarIndividuo(int PERIODOS,
                          int PERIODOS_ANO)
 {
     individuo novo_ind;
-    int i,j,f_obj = 0;
+    int i,j, f_obj = 0;
 
-    especies *head = NULL, *cursor = NULL;
+//    especies *head = NULL, *cursor = NULL;
     
     /*  Inicializa a matriz solucao de cada individuo  */
     int **matrix = (int **)calloc(TERRENOS, sizeof(int *));
@@ -29,63 +29,76 @@ individuo criarIndividuo(int PERIODOS,
 
     
     /*  Cria a matriz solucao  */
-    int esp_selecionada = -1, plant_count = 0, last_esp = -1;
+//    int esp_selecionada = -1, plant_count = 0, last_esp = -1;
     for (i = 0; i < TERRENOS; i++)
     {
-        for (j = 0; j < PERIODOS; j++)
-        {
-            head = listEspecies(ESPECIES,
-                                PERIODOS,
-                                j,
-                                temp_proc,
-                                demanda,
-                                per_plantio,
-                                last_esp,
-                                PERIODOS_ANO,
-                                demanda_atendida);
-
-            if (head != NULL)
-            {
-                cursor = head;
-//                printf(".%f.",cursor->prob);
-//                int random_especie = rand() % count(head);
-////                printf(".%d ", random_especie);
-//                for (auxj = 0; auxj < random_especie; auxj++)
+//        for (j = 0; j < PERIODOS; j++)
+//        {
+        
+       f_obj = createRow (matrix,
+                           demanda_atendida,
+                           ESPECIES,
+                           PERIODOS,
+                           TERRENOS,
+                           PERIODOS_ANO,
+                           temp_proc,
+                           area_terreno,
+                           demanda,
+                           lucrativity,
+                           productivity,
+                           per_plantio,
+                           i);
+            
+//            head = listEspecies(ESPECIES,
+//                                PERIODOS,
+//                                j,
+//                                temp_proc,
+//                                demanda,
+//                                per_plantio,
+//                                last_esp,
+//                                PERIODOS_ANO,
+//                                demanda_atendida);
+//
+//            if (head != NULL)
+//            {
+//                cursor = head;
+////                printf(".%f.",cursor->prob);
+////                int random_especie = rand() % count(head);
+//////                printf(".%d ", random_especie);
+////                for (auxj = 0; auxj < random_especie; auxj++)
+////                {
+////                    cursor = cursor->next;
+////                }
+//
+//                float random_especie = uniforme(0,1);
+//                if (random_especie > cursor->prob)
 //                {
 //                    cursor = cursor->next;
 //                }
-                
-                float random_especie = uniforme(0,1);
-                if (random_especie > cursor->prob)
-                {
-                    cursor = cursor->next;
-                }
-                
-                esp_selecionada = cursor->idx;
-                
-                matrix[i][j] = esp_selecionada + 1;
-                plant_count = temp_proc[esp_selecionada] - 1;
-                
-                demanda_atendida[esp_selecionada] = area_terreno[i] * productivity[esp_selecionada];
-                    //TODO: Mudar modo de calcular fObj. <Perda no lucro por nao atender denanda>
-                f_obj += lucrativity[esp_selecionada] * area_terreno[i] * productivity[esp_selecionada];
-            }
-            
-            while (plant_count != 0)
-            {
-                j++;
-                matrix[i][j] = esp_selecionada + 1;
-                plant_count--;
-            }
-            
-            last_esp = matrix[i][j] - 1;
-
-            esp_selecionada = -1;
-            plant_count = 0;
-            freeMemory(head);
-            head = NULL;
-        }
-        last_esp = -1;
+//
+//                esp_selecionada = cursor->idx;
+//
+//                matrix[i][j] = esp_selecionada + 1;
+//                plant_count = temp_proc[esp_selecionada] - 1;
+//
+//                demanda_atendida[esp_selecionada] = area_terreno[i] * productivity[esp_selecionada];
+//            }
+//
+//            while (plant_count != 0)
+//            {
+//                j++;
+//                matrix[i][j] = esp_selecionada + 1;
+//                plant_count--;
+//            }
+//
+//            last_esp = matrix[i][j] - 1;
+//
+//            esp_selecionada = -1;
+//            plant_count = 0;
+//            freeMemory(head);
+//            head = NULL;
+//        }
+//        last_esp = -1;
     }
     
     /********** PRINT **********/
@@ -110,15 +123,17 @@ individuo criarIndividuo(int PERIODOS,
     
     novo_ind.sol = matrix;
     novo_ind.demanda_atendida = demanda_atendida;
-    novo_ind.f_obj = CalcularFuncaoObj (PERIODOS,
-                                        TERRENOS,
-                                        area_terreno,
-                                        demanda,
-                                        lucrativity,
-                                        productivity,
-                                        matrix,
-                                        demanda_atendida);
-    
+//    novo_ind.f_obj = CalcularFuncaoObj (PERIODOS,
+//                                        TERRENOS,
+//                                        area_terreno,
+//                                        demanda,
+//                                        lucrativity,
+//                                        productivity,
+//                                        matrix,
+//                                        demanda_atendida);
+
+    novo_ind.f_obj = f_obj;
+//    printf("%d\n",novo_ind.f_obj);
     return novo_ind;
 }
 
@@ -127,6 +142,8 @@ especies* add(especies *head, int data)
 {
     especies* new_item = create(data,NULL);
     especies *aux = head;
+    
+    printf(": %d :", new_item->idx);
     
     if (head != NULL)
     {
@@ -157,15 +174,16 @@ int CalcularFuncaoObj (int PERIODOS,
     
     for (i = 0; i < TERRENOS; i++)
     {
+        
         for (j = 0; j < PERIODOS; j++)
         {
             /*  */
-            if (solucao[i][j] - 1 == last_esp)
+            if (solucao[i][j] == 0 || solucao[i][j] - 1 == last_esp)
             {
                 continue;
             }
             last_esp = solucao[i][j] - 1;
-            
+
             f_obj += area_terreno[i] * productivity[last_esp] * lucrativity[last_esp];
 
             /* Se a damanda dessa especie nao foi atendida */
@@ -209,29 +227,77 @@ especies* create(int data,especies *next)
     return new_item;
 }
 /*****/
-int createRow (int *row,
+int createRow (int **matrix,
+               int *demanda_atendida,
                int ESPECIES,
                int PERIODOS,
+               int TERRENOS,
                int PERIODOS_ANO,
                int *temp_proc,
+               int *area_terreno,
                int *demanda,
                int *lucrativity,
-               int **per_plantio)
+               int *productivity,
+               int **per_plantio,
+               int idx_terreno_novo)
 {
-        //TODO: Arrumar demanda atendida.
+        //TODO: Arrumar demanda atendida. <Done?>
         // <Pegar demanda atendida anterior, recalcular ou adicionar nova demanda>
-    int esp_selecionada = 0, plant_count = 0, last_esp = -1;
+    int esp_selecionada = -1, plant_count = 0, last_esp = -1;
     int j,f_obj = 0;
-    int *demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
+//    int *demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
     especies *head = NULL, *cursor = NULL;
     
     //Reset row
     for(j = 0; j < PERIODOS; j++)
     {
-        row[j] = 0;
+        matrix[idx_terreno_novo][j] = 0;
     }
     
     //Create new row
+//    for (j = 0; j < PERIODOS; j++)
+//    {
+//        head = listEspecies(ESPECIES,
+//                            PERIODOS,
+//                            j,
+//                            temp_proc,
+//                            demanda,
+//                            per_plantio,
+//                            last_esp,
+//                            PERIODOS_ANO,
+//                            demanda_atendida);
+//        int auxj;
+//        if (head != NULL){
+//            cursor = head;
+//            int random_especie = rand() % count(head);
+//            for (auxj = 0; auxj < random_especie; auxj++)
+//            {
+//                cursor = cursor->next;
+//            }
+//            esp_selecionada = cursor->idx ;
+//
+//            row[j]= esp_selecionada + 1;
+//            last_esp = esp_selecionada;
+//            plant_count = temp_proc[esp_selecionada] - 1;
+//
+//            f_obj += lucrativity[esp_selecionada];
+//        }
+//        else
+//        {
+//            last_esp = -1;
+//        }
+//
+//        while (plant_count != 0)
+//        {
+//            j++;
+//            row[j] = esp_selecionada + 1;
+//            plant_count--;
+//        }
+//
+//        freeMemory(head);
+//        head = NULL;
+//    }
+    
     for (j = 0; j < PERIODOS; j++)
     {
         head = listEspecies(ESPECIES,
@@ -243,37 +309,49 @@ int createRow (int *row,
                             last_esp,
                             PERIODOS_ANO,
                             demanda_atendida);
-        int auxj;
-        if (head != NULL){
+        
+        if (head != NULL)
+        {
             cursor = head;
-            int random_especie = rand() % count(head);
-            for (auxj = 0; auxj < random_especie; auxj++)
+            
+            float random_especie = uniforme(0,1);
+            if (random_especie > cursor->prob)
             {
                 cursor = cursor->next;
             }
-            esp_selecionada = cursor->idx ;
             
-            row[j]= esp_selecionada + 1;
-            last_esp = esp_selecionada;
+            esp_selecionada = cursor->idx;
+            
+            matrix[idx_terreno_novo][j] = esp_selecionada + 1;
             plant_count = temp_proc[esp_selecionada] - 1;
             
-            f_obj += lucrativity[esp_selecionada];
-        }
-        else
-        {
-            last_esp = -1;
+            demanda_atendida[esp_selecionada] += area_terreno[idx_terreno_novo] * productivity[esp_selecionada];
+
         }
         
         while (plant_count != 0)
         {
             j++;
-            row[j] = esp_selecionada + 1;
+            matrix[idx_terreno_novo][j] = esp_selecionada + 1;
             plant_count--;
         }
         
+        last_esp = matrix[idx_terreno_novo][j] - 1;
+        
+        esp_selecionada = -1;
+        plant_count = 0;
         freeMemory(head);
         head = NULL;
     }
+    
+    f_obj = CalcularFuncaoObj (PERIODOS,
+                               TERRENOS,
+                               area_terreno,
+                               demanda,
+                               lucrativity,
+                               productivity,
+                               matrix,
+                               demanda_atendida);
     
     return f_obj;
 }
@@ -299,6 +377,8 @@ especies* listEspecies (int ESPECIES,
                         int PERIODOS_ANO,
                         int *demanda_atendida)
 {
+        //TODO: Check selection probability.Demand not influencing enough.
+        //TODO: Demand check needs to be always positive.
     int i, sum = 0;
     double cumulative = 0;
     especies *aux = NULL, *aux_prob = NULL;
@@ -342,6 +422,7 @@ especies* listEspecies (int ESPECIES,
                     aux = add(aux,i);
                 }
                 
+                
 //                if (periodo <= per_plantio[i][1] - 1)
 //                {
 //                    if ((periodo % PERIODOS_ANO) >= 0 &&a
@@ -363,14 +444,28 @@ especies* listEspecies (int ESPECIES,
             }
         }
     }
+    aux_prob = aux;
+    while (aux_prob != NULL)
+    {
+        printf("=%d= ",aux_prob->idx);
+        aux_prob = aux_prob->next;
+    }
+    printf("\n");
     
     /* Se existir alguma especie na lista, montar probabilidade
      de escolha baseada na demanda nao atendida */
+        //TODO: This function has an error of segmentation.
     if (aux != NULL)
     {
         aux_prob = aux;
         while (aux_prob != NULL)
         {
+            printf(" [%d %d %d] ",aux_prob->idx ,demanda[aux_prob->idx],demanda_atendida[aux_prob->idx]);
+//            if ( (demanda[aux_prob->idx] - demanda_atendida[aux_prob->idx]) > 0)
+//            {
+////                sum += demanda[aux_prob->idx] - demanda_atendida[aux_prob->idx];
+//            }
+            
             sum += demanda[aux_prob->idx] - demanda_atendida[aux_prob->idx];
             aux_prob = aux_prob->next;
         }

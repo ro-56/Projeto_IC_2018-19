@@ -1,6 +1,5 @@
 #include "defs.h"
 
-
 void displayAverageFObj(individuo *group,
                         int POPULACAO)
 {
@@ -96,3 +95,16 @@ int getBestFObj(individuo *group,
     return best_fobj;
 }
 /*********/
+
+void displayDemandaAtendida (individuo indv,
+                             int ESPECIES)
+{
+    int i;
+    printf("Demanda atendida: ");
+    for (i = 0; i < ESPECIES; i++)
+    {
+        printf("%d ",indv.demanda_atendida[i]);
+    }
+    printf("\n");
+    return;
+}

@@ -35,14 +35,19 @@ individuo criarIndividuo (int PERIODOS,
                           int **per_plantio,
                           int PERIODOS_ANO);
 
-int createRow (int *row,
+int createRow (int **matrix,
+               int *demanda_atendida,
                int ESPECIES,
                int PERIODOS,
+               int TERRENOS,
                int PERIODOS_ANO,
                int *temp_proc,
+               int *area_terreno,
                int *demanda,
                int *lucrativity,
-               int **per_plantio);
+               int *productivity,
+               int **per_plantio,
+               int idx_terreno_novo);
 
 /*** LEITURA ***/
 
@@ -69,9 +74,11 @@ void runGeneration(individuo *populacao,
                    int TERRENOS,
                    int ESPECIES,
                    int PERIODOS_ANO,
+                   int *area_terreno,
                    int *temp_proc,
                    int *demanda,
                    int *lucrativity,
+                   int *productivity,
                    int **per_plantio);
 
 /*** RESULTADOS ***/
@@ -81,6 +88,9 @@ void displayAverageFObj(individuo *group,
 
 void displayBestFObj(individuo *group,
                      int POPULACAO);
+
+void displayDemandaAtendida (individuo indv,
+                             int ESPECIES);
 
 /*
 void display_best_individuo(individuo *group,
@@ -106,3 +116,7 @@ int inteiro(int a,
 
 double uniforme(double a,
                 double b);
+
+/*** GRAPHS ***/
+
+void graphBest ();
