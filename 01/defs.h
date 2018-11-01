@@ -83,11 +83,11 @@ void runGeneration(individuo *populacao,
 
 /*** RESULTADOS ***/
 
-void displayAverageFObj(individuo *group,
-                        int POPULACAO);
+void displayAverageFObj (individuo *group,
+                         int POPULACAO);
 
-void displayBestFObj(individuo *group,
-                     int POPULACAO);
+void displayBestFObj (individuo *group,
+                      int POPULACAO);
 
 void displayDemandaAtendida (individuo indv,
                              int ESPECIES);
@@ -99,24 +99,30 @@ void display_best_individuo(individuo *group,
                             int TERRENOS);
 */
 
-void displayIndividuo(individuo object,
+void displayIndividuo (individuo object,
                        int PERIODOS,
                        int TERRENOS);
 
-float getAverageFObj(individuo *group,
-                     int POPULACAO);
+float getAverageFObj (individuo *group,
+                      int POPULACAO);
 
-int getBestFObj(individuo *group,
-                int POPULACAO);
+int getBestFObj (individuo *group,
+                 int POPULACAO);
 
 /*** MISC ***/
 
-int inteiro(int a,
-            int b);
+int inteiro (int a,
+             int b);
 
-double uniforme(double a,
-                double b);
+double uniforme (double a,
+                 double b);
 
 /*** GRAPHS ***/
 
-void graphBest ();
+void graphBest (individuo *group,
+                int POPULACAO);
+
+void graphAverage (individuo *group,
+                   int POPULACAO);
+
+void resetTxt();

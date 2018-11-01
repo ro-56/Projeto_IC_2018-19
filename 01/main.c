@@ -3,7 +3,7 @@
 #include "defs.h"
 
 #define MICRO_PER_SECOND 1000000
-#define POPULACAO 50
+#define POPULACAO 100
 #define GENERATIONS 1000
 
 int main ()
@@ -65,6 +65,8 @@ int main ()
                                       PERIODOS_ANO);
     }
     
+    resetTxt();
+    
     /*************************** GENETICO ******************************/
     
     ordenarPopulacao(populacao, POPULACAO);
@@ -75,6 +77,8 @@ int main ()
                      TERRENOS);
     displayBestFObj(populacao,
                     POPULACAO);
+    displayDemandaAtendida (populacao[0],
+                            ESPECIES);
 //
     for (i = 0; i < GENERATIONS; i++)
     {
@@ -90,6 +94,12 @@ int main ()
                       lucrativity,
                       productivity,
                       per_plantio);
+        
+        graphBest (populacao,
+                   POPULACAO);
+        
+        graphAverage (populacao,
+                      POPULACAO);
     }
 //
     printf("Ultima Geracao");
@@ -102,7 +112,7 @@ int main ()
                             ESPECIES);
     /*************************** TEST ******************************/
     
-//    graphBest ();
+
     
     /*************************** PRINT ******************************/
     gettimeofday(&stop_time, NULL);

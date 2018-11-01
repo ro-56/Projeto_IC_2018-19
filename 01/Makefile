@@ -1,5 +1,5 @@
 objects = leitura.o main.o individuo.o genetic.o results.o misc.o graph.o
-
+TxtResults = graphBest.txt graphAverage.txt
 
 run: $(objects)
 	gcc $(objects) -o Run -Wall -lm
@@ -29,5 +29,5 @@ clean:
 	rm -f *.o *.gch
 
 clear:
-	rm -f Run *.o *.gch 
+	rm -f Run *.o *.gch $(TxtResults)
 	clear

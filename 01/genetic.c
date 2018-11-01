@@ -66,7 +66,7 @@ void runGeneration (individuo *populacao,
         pai2 = torneio(populacao[indPai1[i+1]], populacao[indPai2[i+1]]);
 
         double rand_num = uniforme(0,1);
-//        puts("HERE 1");
+
         /* Probabilidade de Crossover, copia individuos caso contrario */
         if (rand_num <= PROBABILIDADE_CROSSOVER)
         {
@@ -76,6 +76,7 @@ void runGeneration (individuo *populacao,
                        &filhos[i+1],
                        PERIODOS,
                        TERRENOS,
+                       ESPECIES,
                        area_terreno,
                        demanda,
                        lucrativity,
@@ -94,7 +95,7 @@ void runGeneration (individuo *populacao,
                            TERRENOS,
                            ESPECIES);
         }
-//        puts("HERE 2");
+
         /* Mutação de cada filho */
         mutation (filhos[i],
                   ESPECIES,
@@ -120,7 +121,6 @@ void runGeneration (individuo *populacao,
                   productivity,
                   per_plantio);
     }
-//    puts("HERE 3");
     mergePopulations (populacao,
                       filhos,
                       mista,
@@ -130,14 +130,14 @@ void runGeneration (individuo *populacao,
                       ESPECIES);
 
     ordenarPopulacao (mista, 2*POPULACAO);
-//    puts("HERE 4");
+
     makeNewPopulation (populacao,
                        mista,
                        POPULACAO,
                        PERIODOS,
                        TERRENOS,
                        ESPECIES);
-//puts("HERE 5");
+
     ordenarPopulacao(populacao, POPULACAO);
 
     /*************************** FREE ******************************/
@@ -231,6 +231,7 @@ void crossover (individuo pai1,
                 individuo *filho2,
                 int PERIODOS,
                 int TERRENOS,
+                int ESPECIES,
                 int *area_terreno,
                 int *demanda,
                 int *lucrativity,
@@ -238,7 +239,6 @@ void crossover (individuo pai1,
 {
     int i, j;
     int division_line = (int)(TERRENOS * MAX_CROSSOVER_PERCENTAGE);
-    
 //    Alternative division_line calculation?
 //    division_line = inteiro((int)(TERRENOS * (1- MAX_CROSSOVER_PERCENTAGE)),
 //                            (int)(TERRENOS * MAX_CROSSOVER_PERCENTAGE));
@@ -262,6 +262,49 @@ void crossover (individuo pai1,
             (*filho2).sol[i][j] = pai2.sol[i][j];
         }
     }
+    
+        /////////Calculo de demanda atendida nova
+    /* Zerar demanda_atendida */
+    
+    for(i = 0; i < ESPECIES; i++)
+    {
+        (*filho1).demanda_atendida[i] = 0;
+        (*filho2).demanda_atendida[i] = 0;
+    }
+    
+    /* Recalcular demanda_atendida */
+    int last_esp = 0;
+    for (i = 0; i < TERRENOS; i++)
+    {
+        for(j = 0; j < PERIODOS; j++)
+        {
+            if ((*filho1).sol[i][j] == 0 || (*filho1).sol[i][j] == last_esp)
+            {
+                continue;
+            }
+            
+            last_esp = (*filho1).sol[i][j];
+            (*filho1).demanda_atendida[last_esp-1] += area_terreno[i] * productivity[last_esp-1];
+            
+        }
+    }
+    for (i = 0; i < TERRENOS; i++)
+    {
+        for(j = 0; j < PERIODOS; j++)
+        {
+            if ((*filho2).sol[i][j] == 0 || (*filho2).sol[i][j] == last_esp)
+            {
+                continue;
+            }
+            
+            last_esp = (*filho2).sol[i][j];
+            (*filho2).demanda_atendida[last_esp-1] += area_terreno[i] * productivity[last_esp-1];
+            
+        }
+    }
+    
+    
+        ///////
     
     (*filho1).f_obj = CalcularFuncaoObj (PERIODOS,
                                          TERRENOS,
@@ -316,7 +359,6 @@ int individuo_aleatorio (int n)
     return i;
 }
 /*****/
-    //TODO: There is something here. I just don't know what.
 void makeNewPopulation (individuo *new_population,
                         individuo *combined_group,
                         int POPULACAO,
@@ -336,11 +378,20 @@ void makeNewPopulation (individuo *new_population,
     int num_items_selected = num_elite;
     double rand_num;
     
+    /* Calcula a soma da funcao Obj de todos os individuos do grupo */
     for (i = num_elite; i < 2 * POPULACAO; i++)
+    {
+        if (combined_group[i].f_obj <= 0)
+            continue;
+            
         sum_fobj += combined_group[i].f_obj;
+    }
+    
     
     for (i = 0; i < 2 * POPULACAO; i++)
     {
+        /* Se o individuo for um dos melhores (elite), copiar o individuo */
+        /* Se nao for, cada individuo tera uma probabilidade de ser escolhido baseado em sua FObj */
         if (i < num_elite)
         {
             selected[i] = 1;
@@ -352,8 +403,14 @@ void makeNewPopulation (individuo *new_population,
         }
         else
         {
-                //TODO: Change probability function to the new one. (Negative fObj)
-            prob[i] = prob[i-1] + ((double)combined_group[i].f_obj / (double)sum_fobj);
+            if (combined_group[i].f_obj <= 0)
+            {
+                prob[i] = prob[i-1];
+            }
+            else
+            {
+                prob[i] = prob[i-1] + ((double)combined_group[i].f_obj / (double)sum_fobj);
+            }
         }
     }
     
