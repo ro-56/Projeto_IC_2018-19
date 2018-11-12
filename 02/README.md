@@ -1,25 +1,24 @@
-# Definição:
-	Busca uma solução para o problema de CRP utilizando listas ligadas
+### Definição:
+- Busca uma solução para o problema de CRP utilizando listas ligadas
 
-# Restrições:
-	Demanda precisa ser atendida ("multa" para demanda não atendida)
-	Sequencia de mesma planta não pode ocorrer
-	Sazonalidade deve ser obedecida
+### Restrições:
+- Demanda precisa ser atendida ("multa" para demanda não atendida)
+- Sequencia de mesma planta não pode ocorrer
+- Sazonalidade deve ser obedecida
 		
 
-# Dados de entrada:
-	Produtividade (ton/hec)
-	Area dos terrenos (hec)
-	Tempo de produção (períodos)
-	Demanda (ton)
-	Lucratividade (u.m./ton)
-	Número de terrenos
-	Número de períodos
-	Número de espécies
+### Dados de entrada:
+- Produtividade (ton/hec)
+- Area dos terrenos (hec)
+- Tempo de produção (períodos)
+- Demanda (ton)
+- Lucratividade (u.m./ton)
+- Número de terrenos
+- Número de espécies
 	
 
-# Exemplo de "Entrada.txt":
-/************************************/
+### Exemplo de "Entrada.txt":
+```
 PERIODOS_POR_ANO:
 12
 
@@ -57,4 +56,4 @@ PERIODO_DE_PLANTIO_[Ei,Ti]:
 5 12
 4 7
 2 8
-/************************************/
+```
