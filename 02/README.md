@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Uso:
 - `make`: Processa os arquivos e cria um programa executável.
 - `./run`: Executa o programa executável.
@@ -9,6 +10,11 @@
 ### Definição:
 - Busca uma solução para o problema de CRP utilizando listas ligadas
 
+=======
+### Definição:
+- Busca uma solução para o problema de CRP utilizando listas ligadas
+
+>>>>>>> 97bf2f0391587c48b78e841ce402d096e6977691
 ### Restrições:
 - Demanda precisa ser atendida ("multa" para demanda não atendida)
 - Sequencia de mesma planta não pode ocorrer
@@ -22,7 +28,10 @@
 - Demanda (ton)
 - Lucratividade (u.m./ton)
 - Número de terrenos
+<<<<<<< HEAD
 - Número de períodos
+=======
+>>>>>>> 97bf2f0391587c48b78e841ce402d096e6977691
 - Número de espécies
 	
 
@@ -65,4 +74,8 @@ PERIODO_DE_PLANTIO_[Ei,Ti]:
 5 12
 4 7
 2 8
+<<<<<<< HEAD
 ```
+=======
+```
+>>>>>>> 97bf2f0391587c48b78e841ce402d096e6977691

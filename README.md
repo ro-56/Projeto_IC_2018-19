@@ -8,4 +8,4 @@ Cada grupo desse projeto representa uma diferente análise, seja por uma diferen
 
 ## Componentes
 - `01` : Problema analisado utilizando uma matriz das espécies a serem plantadas em determinados períodos.
-- `02` : O mesmo problema do item anterior,mas utilizando Listas Ligadas para a resoluçõo do problema e com a adição da restrição de famílias de espécies.
+- `02` : O mesmo problema do item anterior, mas utilizando Listas Ligadas para a resoluçõo do problema e com a adição da restrição de famílias de espécies.
