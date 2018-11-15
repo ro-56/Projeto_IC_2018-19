@@ -1,18 +1,26 @@
 #include "defs.h"
 #include "manipular_indiv.h"
 #include "individuo.h"
-/*    */
 
 
-
-
-
-
-
-
-
-
-
+/* ------ */
+plot* alocarSolucao (plot *solucao,
+                     int TERRENOS)
+{
+    int i;
+    solucao = NULL;
+    
+    for (i = 0; i < TERRENOS; i++)
+    {
+        solucao = addPlot (solucao,
+                           i,
+                           0,
+                           NULL,
+                           NULL);
+    }
+    
+    return solucao;
+}
 
 /* ------ */
 int* calculateMetDemand (plot *solucao,
@@ -41,6 +49,23 @@ int* calculateMetDemand (plot *solucao,
 }
 
 /* ------ */
+individuo clearIndividuo (individuo indiv,
+                          int ESPECIES)
+{
+    /*  Zerar funcao objetivo  */
+    indiv.f_obj = 0;
+    
+    /*  Zerar demanda atendida  */
+    free (indiv.demanda_atendida);
+    indiv.demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
+    
+    /*  Zerar solucao  */
+    indiv.solucao = clearSolution (indiv.solucao);
+    
+    return indiv;
+}
+
+/* ------ */
 plot* clearPlot(plot *p)
 {
     crop *c_walker = p->crops, *c_deleter = NULL;
@@ -58,27 +83,23 @@ plot* clearPlot(plot *p)
 }
 
 /* ------ */
-
 plot* clearSolution(plot *p)
 {
-    plot *p_walker = p, *p_deleter = NULL;
+    plot *p_walker = p;
     
     while (p_walker)
     {
-        p_deleter = p_walker;
-        p_deleter = clearPlot(p_deleter);
+        clearPlot(p_walker);
         p_walker = p_walker->next_plot;
-        free(p_deleter);
     }
-    p = NULL;
     
     return p;
 }
 
 /* ------ */
-void copiarIndividuo (individuo from_ind,
-                      individuo *to_ind,
-                      int ESPECIES)
+void copyIndividuo (individuo from_ind,
+                    individuo *to_ind,
+                    int ESPECIES)
 {
     /*  Copiar solucao  */
     to_ind->solucao = copySolution (from_ind.solucao,
@@ -99,106 +120,59 @@ void copiarIndividuo (individuo from_ind,
     
     return;
 }
+/* ------ */
+plot* copyPlot (plot *from_p,
+                plot *to_p)
+{
+    crop *c_walker_from = from_p->crops;
+    
+    while (c_walker_from)
+    {
+        /*  Adiciona a planta lida no final do terreno  */
+        to_p->crops = addCrop(to_p->crops,
+                              c_walker_from->idx,
+                              c_walker_from->inicio,
+                              (c_walker_from->free_time - c_walker_from->inicio));
+        
+        c_walker_from = c_walker_from->next_crop;
+    }
+    
+    return to_p;
+}
 
 /* ------ */
 plot* copySolution (plot *from_p,
                     plot *to_p)
 {
     plot *p_walker_to = to_p, *p_walker_from = from_p;
-    crop *c_walker_from = NULL;
     
     /*  Ponteiro "from" comeca no inicio da lista  */
     while (p_walker_from)
     {
-        /*  Adicionar um novo terreno no fim da lista do ponteiro original "to"  */
-        to_p = addPlot (to_p,
-                        p_walker_from->idx,
-                        p_walker_from->free_time,
-                        NULL,
-                        NULL);
+        /*  Copiar os plantas do terreno "from" para o terreno "to"  */
+        p_walker_to = copyPlot(p_walker_from,
+                               p_walker_to);
         
-        p_walker_to = to_p;
-        /*  Ponteiro "to" vai ate o final da lista  */
-        while (p_walker_to->next_plot)
-        {
-            p_walker_to = p_walker_to->next_plot;
-        }
-        
-        /*  Ponteiro "from" le todas as plantas do terreno onde esta  */
-        c_walker_from = p_walker_from->crops;
-        while (c_walker_from)
-        {
-            /*  Adicionar as plantas lidas no terreno do ponteiro "to"  */
-            p_walker_to->crops = addCrop(p_walker_to->crops,
-                                         c_walker_from->idx,
-                                         c_walker_from->inicio,
-                                         (c_walker_from->free_time - c_walker_from->inicio));
-            
-            c_walker_from = c_walker_from->next_crop;
-        }
-        
-        /*  Ponteiro "from" vai ate o proximo terreno  */
+        p_walker_to = p_walker_to->next_plot;
         p_walker_from = p_walker_from->next_plot;
     }
+    
     return to_p;
 }
 
 /* ------ */
-void preencherTerrenoAleatoriamente (individuo *indiv,
-                                     int plot_idx,
-                                     int ESPECIES,
-                                     int PERIODOS,
-                                     int *area_terreno,
-                                     int *temp_proc,
-                                     int *familia,
-                                     int *demanda,
-                                     int *productivity,
-                                     int **per_plantio,
-                                     int PERIODOS_ANO)
+void preencherTerreno (individuo *indiv,
+                       plot *p,
+                       int ESPECIES,
+                       int PERIODOS,
+                       int *area_terreno,
+                       int *temp_proc,
+                       int *familia,
+                       int *demanda,
+                       int *productivity,
+                       int **per_plantio,
+                       int PERIODOS_ANO)
 {
-    plot *p = indiv->solucao;
-    
-    puts("A");
-    printIndividuo((*indiv));
-    
-    while (p->idx != plot_idx)
-    {
-        printf(": %d :",p->idx);
-        p = p->next_plot;
-    }
-    puts(" ");
-    
-    /*  Zerar terreno  */
-//    clearPlot(p);
-    
-    puts("B");
-    printIndividuo((*indiv));
-    
-    int i;
-    for (i = 0; i < ESPECIES; i++)
-    {
-        printf("-%d-",indiv->demanda_atendida[i]);
-    }
-    puts(" ");
-    
-    /*  Calcular nova demanda atendida  */
-    indiv->demanda_atendida = calculateMetDemand (indiv->solucao,
-                                                  ESPECIES,
-                                                  area_terreno,
-                                                  demanda,
-                                                  productivity);
-   
-    
-    for (i = 0; i < ESPECIES; i++)
-    {
-        printf("-%d-",indiv->demanda_atendida[i]);
-    }
-    puts(" ");
-    
-    puts("C");
-    printIndividuo((*indiv));
-    /*  Preencher o novo terreno  */
-    printf("\n!p: %d, %d !\n",p->free_time, p->idx);
     while (p->free_time < PERIODOS)
     {
         addNewPlantToPlot (ESPECIES,
@@ -213,9 +187,6 @@ void preencherTerrenoAleatoriamente (individuo *indiv,
                            indiv->demanda_atendida,
                            p);
     }
-    
-    puts("D");
-    printIndividuo((*indiv));
     
     return;
 }

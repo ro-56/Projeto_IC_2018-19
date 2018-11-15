@@ -1,8 +1,9 @@
 #include "defs.h"
+#include "manipular_indiv.h"
 #include "individuo.h"
 
-#define DEMAND_PENALTY_PER_UNIT 2
-#define DEMAND_PENALTY 50
+#define DEMAND_PENALTY_PER_UNIT 50
+#define DEMAND_PENALTY 200
 
 
 individuo criarIndividuo(int PERIODOS,
@@ -19,32 +20,15 @@ individuo criarIndividuo(int PERIODOS,
 {
     
     individuo novo_ind;
-    int i, f_obj = 0;
+    int f_obj = 0;
 
     /*  Inicializa o vetor demanda atendida de cada individuo  */
     int *demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
     
     /*  Inicializa a lista de terrenos  */
     plot *solucao = NULL;
-    plot *aux = solucao;
-    for (i = 0; i < TERRENOS; i++)
-    {
-        plot* new_item = createNewPlot (i,
-                                        0,
-                                        NULL,
-                                        NULL);
-        
-        if (solucao != NULL)
-        {
-            aux->next_plot = new_item;
-        }
-        else
-        {
-            solucao = new_item;
-        }
-        
-        aux = new_item;
-    }
+    solucao = alocarSolucao (solucao,
+                             TERRENOS);
     
     /*  Preenche os terrenos com plantas  */
     int can_accept_new_plants = 1, min_free_time = 1000, plot_idx_min_free_time;

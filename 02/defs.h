@@ -68,19 +68,20 @@ individuo criarIndividuo(int PERIODOS,
                          int PERIODOS_ANO);
 /*** GENETICO ***/
 
-void runGeneration(individuo *populacao,
-                   int POPULACAO,
-                   int PERIODOS,
-                   int TERRENOS,
-                   int ESPECIES,
-                   int PERIODOS_ANO,
-                   int *area_terreno,
-                   int *temp_proc,
-                   int *familia,
-                   int *demanda,
-                   int *lucrativity,
-                   int *productivity,
-                   int **per_plantio);
+void runGenerations (int GENERATION,
+                     individuo *populacao,
+                     int POPULACAO,
+                     int PERIODOS,
+                     int TERRENOS,
+                     int ESPECIES,
+                     int PERIODOS_ANO,
+                     int *area_terreno,
+                     int *temp_proc,
+                     int *familia,
+                     int *demanda,
+                     int *lucrativity,
+                     int *productivity,
+                     int **per_plantio);
 
 /*** MISC ***/
 int compararIndividuos (const void *i,
@@ -100,6 +101,10 @@ void printIndividuo (individuo indiv);
 
 void printIndividuoSolution (individuo indiv,
                              int *temp_proc);
+
+void printRelatorio(individuo indiv,
+                    int ESPECIES,
+                    int *temp_proc);
 
 void printTerrenos (plot *t);
 

@@ -1,25 +1,33 @@
-# Definição:
-	Busca uma solução para o problema de CRP utilizando listas ligadas
+### Uso:
+- `make`: Processa os arquivos e cria um programa executável.
+- `./run`: Executa o programa executável.
+- `make clean`: Limpa a pasta, deixando apenas os arquivos principais, o `.txt` e o programa executável.
+- `make clear`: Limpa todos os arquivos extras, até os `.txt` para gráficos e o executável.
+- `make reset`: Limpa a pasta com `make clear` e processa os arquivos com o `make`.
+- `make reboot`: Limpa a pasta com `make reset` e executa o programa com `./run`.
 
-# Restrições:
-	Demanda precisa ser atendida ("multa" para demanda não atendida)
-	Sequencia de mesma planta não pode ocorrer
-	Sazonalidade deve ser obedecida
+### Definição:
+- Busca uma solução para o problema de CRP utilizando listas ligadas
+
+### Restrições:
+- Demanda precisa ser atendida ("multa" para demanda não atendida)
+- Sequencia de mesma planta não pode ocorrer
+- Sazonalidade deve ser obedecida
 		
 
-# Dados de entrada:
-	Produtividade (ton/hec)
-	Area dos terrenos (hec)
-	Tempo de produção (períodos)
-	Demanda (ton)
-	Lucratividade (u.m./ton)
-	Número de terrenos
-	Número de períodos
-	Número de espécies
+### Dados de entrada:
+- Produtividade (ton/hec)
+- Area dos terrenos (hec)
+- Tempo de produção (períodos)
+- Demanda (ton)
+- Lucratividade (u.m./ton)
+- Número de terrenos
+- Número de períodos
+- Número de espécies
 	
 
-# Exemplo de "Entrada.txt":
-/************************************/
+### Exemplo de "Entrada.txt":
+```
 PERIODOS_POR_ANO:
 12
 
@@ -57,4 +65,4 @@ PERIODO_DE_PLANTIO_[Ei,Ti]:
 5 12
 4 7
 2 8
-/************************************/
+```

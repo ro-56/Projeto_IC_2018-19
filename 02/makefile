@@ -1,5 +1,5 @@
 objects = main.o leitura.o individuo.o genetic.o misc.o prints.o manipular_indiv.o graph.o
-TxtResults = graphBest.txt graphAverage.txt
+TxtResults = graphBest.txt graphAverage.txt relatorio.txt
 
 run: $(objects)
 	gcc $(objects) -o Run -Wall -lm
@@ -10,7 +10,7 @@ main.o: main.c defs.h
 leitura.o: leitura.c individuo.h defs.h
 	gcc leitura.c -c -Wall -lm
 
-individuo.o: individuo.c defs.h
+individuo.o: individuo.c manipular_indiv.h defs.h
 	gcc individuo.c -c -Wall -lm
 
 genetic.o: genetic.c genetic.h manipular_indiv.h defs.h
