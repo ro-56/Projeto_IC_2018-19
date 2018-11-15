@@ -1,4 +1,3 @@
-
 ### Uso:
 - `make`: Processa os arquivos e cria um programa executável.
 - `./run`: Executa o programa executável.
@@ -8,21 +7,19 @@
 - `make reboot`: Limpa a pasta com `make reset` e executa o programa com `./run`.
 
 ### Definição:
-- Busca uma solução para o problema de CRP utilizando listas ligadas
-
-### Definição:
-- Busca uma solução para o problema de CRP utilizando listas ligadas
+- Busca uma solução para o problema de CRP utilizando listas ligadas.
 
 ### Restrições:
-- Demanda precisa ser atendida ("multa" para demanda não atendida)
-- Sequencia de mesma planta não pode ocorrer
-- Sazonalidade deve ser obedecida
+- Demanda precisa ser atendida ("multa" para demanda não atendida).
+- Sequencia de plantas da mesma familia não pode ocorrer.
+- Sazonalidade deve ser obedecida.
 		
 
 ### Dados de entrada:
 - Produtividade (ton/hec)
 - Area dos terrenos (hec)
 - Tempo de produção (períodos)
+- Familias
 - Demanda (ton)
 - Lucratividade (u.m./ton)
 - Número de terrenos
@@ -49,6 +46,9 @@ AREA_TERRENOS(hec):
 
 TEMPO_DE_PRODUCAO(periodos):
 2 1 3 1 2 3 4 1 2  
+
+FAMILIAS:
+1 2 3 4 5 6 7 8 9
 
 DEMANDA(ton):
 10 10 10 10 10 10 10 10 10 
