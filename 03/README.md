@@ -3,7 +3,7 @@
 Busca uma solução para o problema de CRP utilizando listas ligadas.
 
 ### Configurações
- - **Iniciação**: Plantas são adicinadas no terreno com menor tempo livre.
+ - **Iniciação**: Plantas são adicinadas nos terrenos em ordem, completando-os totalmente antes de avançar para o próximo.
  - **Mutação**: Um terreno aleatório é substituido por outro totalmente aleatório.
 
 ### Restrições:

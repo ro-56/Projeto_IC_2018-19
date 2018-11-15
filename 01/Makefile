@@ -25,6 +25,15 @@ misc.o: misc.c defs.h
 graph.o: graph.c defs.h
 	gcc graph.c -c -Wall -lm
 
+
+reboot:
+	make reset
+	./run
+
+reset:
+	make clear
+	make
+
 clean:
 	rm -f *.o *.gch
 
