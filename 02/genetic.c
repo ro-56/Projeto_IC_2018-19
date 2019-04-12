@@ -13,6 +13,7 @@ void runGenerations (int GENERATION,
                      int PERIODOS,
                      int TERRENOS,
                      int ESPECIES,
+                     int ADJ_EDGES,
                      int PERIODOS_ANO,
                      int *area_terreno,
                      int *temp_proc,
@@ -20,6 +21,7 @@ void runGenerations (int GENERATION,
                      int *demanda,
                      int *lucrativity,
                      int *productivity,
+                     int **ter_adjacent,
                      int **per_plantio)
 {
  
@@ -80,10 +82,12 @@ void runGenerations (int GENERATION,
                            &filhos[i+1],
                            TERRENOS,
                            ESPECIES,
+                           ADJ_EDGES,
                            area_terreno,
                            demanda,
                            lucrativity,
-                           productivity);
+                           productivity,
+                           ter_adjacent);
             }
             else
             {
@@ -104,12 +108,14 @@ void runGenerations (int GENERATION,
                           TERRENOS,
                           ESPECIES,
                           PERIODOS,
+                          ADJ_EDGES,
                           area_terreno,
                           temp_proc,
                           familia,
                           demanda,
                           lucrativity,
                           productivity,
+                          ter_adjacent,
                           per_plantio,
                           PERIODOS_ANO);
             }
@@ -121,12 +127,14 @@ void runGenerations (int GENERATION,
                           TERRENOS,
                           ESPECIES,
                           PERIODOS,
+                          ADJ_EDGES,
                           area_terreno,
                           temp_proc,
                           familia,
                           demanda,
                           lucrativity,
                           productivity,
+                          ter_adjacent,
                           per_plantio,
                           PERIODOS_ANO);
             }
@@ -188,10 +196,12 @@ void crossover (individuo pai1,
                 individuo *filho2,
                 int TERRENOS,
                 int ESPECIES,
+                int ADJ_EDGES,
                 int *area_terreno,
                 int *demanda,
                 int *lucrativity,
-                int *productivity)
+                int *productivity,
+                int **ter_adjacent)
 {
     int division_line = TERRENOS * DIVISION_PERCENTAGE;
 
@@ -242,14 +252,20 @@ void crossover (individuo pai1,
                                                    productivity);
 
     /* Calcular funcao objetivo */
-    filho1->f_obj = calculateFObj (ESPECIES,
+    filho1->f_obj = calculateFObj (filho1->solucao,
+                                   ESPECIES,
+                                   ADJ_EDGES,
                                    demanda,
                                    lucrativity,
+                                   ter_adjacent,
                                    filho1->demanda_atendida);
 
-    filho2->f_obj = calculateFObj (ESPECIES,
+    filho2->f_obj = calculateFObj (filho2->solucao,
+                                   ESPECIES,
+                                   ADJ_EDGES,
                                    demanda,
                                    lucrativity,
+                                   ter_adjacent,
                                    filho2->demanda_atendida);
     return;
 }
@@ -399,12 +415,14 @@ void mutation (individuo *indiv,
                int TERRENOS,
                int ESPECIES,
                int PERIODOS,
+               int ADJ_EDGES,
                int *area_terreno,
                int *temp_proc,
                int *familia,
                int *demanda,
                int *lucrativity,
                int *productivity,
+               int **ter_adjacent,
                int **per_plantio,
                int PERIODOS_ANO)
 {
@@ -449,14 +467,16 @@ void mutation (individuo *indiv,
                                                   productivity);
     
     /* Calcular funcao objetivo */
-    indiv->f_obj = calculateFObj (ESPECIES,
+    indiv->f_obj = calculateFObj (indiv->solucao,
+                                  ESPECIES,
+                                  ADJ_EDGES,
                                   demanda,
                                   lucrativity,
+                                  ter_adjacent,
                                   indiv->demanda_atendida);
     
     return;
 }
-
 /* ------ */
 individuo torneio (individuo pai1,
                    individuo pai2)

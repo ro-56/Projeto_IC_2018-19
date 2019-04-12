@@ -6,13 +6,15 @@ void lerDados (int *PERIODOS_ANO,
                int *PERIODOS,
                int *ESPECIES,
                int *TERRENOS,
+               int *ADJ_EDGES,
                int **area_terreno,
                int **temp_proc,
                int **familia,
                int **demanda,
                int **lucrativity,
                int **productivity,
-               int ***per_plantio)
+               int ***per_plantio,
+               int ***ter_adjacent)
 {
     
     FILE *f;
@@ -97,6 +99,25 @@ void lerDados (int *PERIODOS_ANO,
             fscanf(f, "%d", &(*per_plantio)[i][j]);
         }
     }
+    /*****/
+    fscanf(f, "%s", trash);
+    fscanf(f, "%d", ADJ_EDGES);
+    /*****/
+    *ter_adjacent = (int **)malloc(*ADJ_EDGES * sizeof(int*));
+    for(i = 0; i < *ADJ_EDGES; i++)
+        (*ter_adjacent)[i] = (int *)malloc(2 * sizeof(int));
+    
+    fscanf(f, "%s", trash);
+    for(i = 0; i < *ADJ_EDGES; i++)
+    {
+        for(j = 0; j < 2; j++)
+        {
+            fscanf(f, "%d", &(*ter_adjacent)[i][j]);
+        }
+    }
+        //TODO: Adicionar check na construcao da matriz
+        //Ver se o primeiro numero é menor que o segundo
+        //Ver se numeros nao sao iguais
     /*****/
     
     return;

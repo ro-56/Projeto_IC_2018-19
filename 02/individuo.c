@@ -4,19 +4,21 @@
 
 #define DEMAND_PENALTY_PER_UNIT 50
 #define DEMAND_PENALTY 200
+#define ADJACENCY_PENALTY 10
 
-
-individuo criarIndividuo(int PERIODOS,
-                         int ESPECIES,
-                         int TERRENOS,
-                         int *area_terreno,
-                         int *temp_proc,
-                         int *familia,
-                         int *demanda,
-                         int *lucrativity,
-                         int *productivity,
-                         int **per_plantio,
-                         int PERIODOS_ANO)
+individuo criarIndividuo (int PERIODOS,
+                          int ESPECIES,
+                          int TERRENOS,
+                          int ADJ_EDGES,
+                          int *area_terreno,
+                          int *temp_proc,
+                          int *familia,
+                          int *demanda,
+                          int *lucrativity,
+                          int *productivity,
+                          int **ter_adjacent,
+                          int **per_plantio,
+                          int PERIODOS_ANO)
 {
     
     individuo novo_ind;
@@ -98,9 +100,12 @@ individuo criarIndividuo(int PERIODOS,
     }
     
     /*  Calcular Funcao Objetivo (lucro) do individuo  */
-    f_obj = calculateFObj (ESPECIES,
+    f_obj = calculateFObj (solucao,
+                           ESPECIES,
+                           ADJ_EDGES,
                            demanda,
                            lucrativity,
+                           ter_adjacent,
                            demanda_atendida);
     
     
@@ -268,9 +273,12 @@ plot* addPlot(plot *head,
 }
 
 /* ------ */
-int calculateFObj (int ESPECIES,
+int calculateFObj (plot *solucao,
+                   int ESPECIES,
+                   int ADJ_EDGES,
                    int *demanda,
                    int *lucrativity,
+                   int **ter_adjacent,
                    int *demanda_atendida)
 {
     int i, result = 0;
@@ -289,6 +297,83 @@ int calculateFObj (int ESPECIES,
             
             /*  Retirar penalidade geral por nao atender a demanda  */
             result -= DEMAND_PENALTY;
+        }
+    }
+    
+    
+    /* Calcular perda de lucratividade por adjacencia de terrenos */
+    plot *plot_walker = NULL;
+    crop *crop_A = NULL;
+    crop *crop_B = NULL;
+    
+    for (i = 0; i < ADJ_EDGES;  i++)
+    {
+        
+        /* Ir ate o primeiro terreno na lista de adjacencia */
+        plot_walker = solucao;
+        while (plot_walker && plot_walker->idx != (ter_adjacent[i][0] - 1))
+        {
+            plot_walker = plot_walker->next_plot;
+        }
+        crop_A = plot_walker->crops;
+
+        /* Ir ate o segundo terreno na lista de adjacencia */
+        plot_walker = solucao;
+        while (plot_walker && plot_walker->idx != (ter_adjacent[i][1] - 1))
+        {
+            plot_walker = plot_walker->next_plot;
+        }
+        crop_B = plot_walker->crops;
+        
+        while (crop_A && crop_B)
+        {
+            if (crop_B->inicio < crop_A->free_time)
+            {
+                /* Calculo da perda por adjacencia */
+                if (crop_A->idx == crop_B->idx)
+                {
+
+                    /* Calcular quantidade de periodos adjacentes */
+                    int periodos_adj = 0;
+                    if (crop_B->inicio >= crop_A->inicio &&
+                        crop_B->free_time <= crop_A->free_time)
+                    {
+                        /* B totalmente contido em A */
+                        periodos_adj = crop_B->free_time - crop_B->inicio;
+                    }
+                    else if (crop_A->inicio >= crop_B->inicio &&
+                             crop_A->free_time <= crop_B->free_time)
+                    {
+                        /* A totalmente contido em B */
+                        periodos_adj = crop_A->free_time - crop_A->inicio;
+                    }
+                    else
+                    {
+                        periodos_adj = intMIN(crop_A->free_time, crop_B->free_time) -
+                                        intMAX(crop_A->inicio,crop_B->inicio);
+                    }
+
+                    /* Calculo */
+                    result -= (periodos_adj * ADJACENCY_PENALTY);
+
+                }
+
+                /* Andar pelas especies plantadas */
+                if (crop_B->free_time <= crop_A->free_time)
+                {
+                    /* Se B totalmente nos mesmos periodos que A, andar  B*/
+                    crop_B = crop_B->next_crop;
+                }
+                else
+                {
+                    /* Se B nao estiver totalmente nos mesmos periodos que A, andar A */
+                    crop_A = crop_A->next_crop;
+                }
+            }
+            else
+            {
+                crop_B = crop_B->next_crop;
+            }
         }
     }
     

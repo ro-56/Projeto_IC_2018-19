@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <math.h>
+#include <math.h>
 //#include <string.h>
 //#include <malloc/malloc.h>
 //#include <malloc.h>
@@ -39,31 +39,38 @@ void lerDados (int *PERIODOS_ANO,
                int *PERIODOS,
                int *ESPECIES,
                int *TERRENOS,
+               int *ADJ_EDGES,
                int **area_terreno,
                int **temp_proc,
                int **familia,
                int **demanda,
                int **lucrativity,
                int **productivity,
-               int ***per_plantio);
+               int ***per_plantio,
+               int ***ter_adjacent);
 
 
 /*** INDIVIDUO ***/
 
-int calculateFObj (int ESPECIES,
+int calculateFObj (plot *solucao,
+                   int ESPECIES,
+                   int ADJ_EDGES,
                    int *demanda,
                    int *lucrativity,
+                   int **ter_adjacent,
                    int *demanda_atendida);
 
 individuo criarIndividuo(int PERIODOS,
                          int ESPECIES,
                          int TERRENOS,
+                         int ADJ_EDGES,
                          int *area_terreno,
                          int *temp_proc,
                          int *familia,
                          int *demanda,
                          int *lucrativity,
                          int *productivity,
+                         int **ter_adjacent,
                          int **per_plantio,
                          int PERIODOS_ANO);
 /*** GENETICO ***/
@@ -74,6 +81,7 @@ void runGenerations (int GENERATION,
                      int PERIODOS,
                      int TERRENOS,
                      int ESPECIES,
+                     int ADJ_EDGES,
                      int PERIODOS_ANO,
                      int *area_terreno,
                      int *temp_proc,
@@ -81,6 +89,7 @@ void runGenerations (int GENERATION,
                      int *demanda,
                      int *lucrativity,
                      int *productivity,
+                     int **ter_adjacent,
                      int **per_plantio);
 
 /*** MISC ***/
@@ -89,6 +98,12 @@ int compararIndividuos (const void *i,
 
 int inteiro (int a,
              int b);
+
+int intMAX (int A,
+            int B);
+
+int intMIN (int A,
+            int B);
 
 void ordenarPopulacao (individuo *populacao,
                        int POPULACAO);

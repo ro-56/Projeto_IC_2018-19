@@ -13,6 +13,7 @@ int main ()
     int ESPECIES;
     int TERRENOS;
     int PERIODOS_ANO;
+    int ADJ_EDGES;
     
     int *area_terreno;
     int *temp_proc;
@@ -22,6 +23,7 @@ int main ()
     int *lucrativity;
     
     int **per_plantio;  // intervalos de plantio [Ei,Ti]
+    int **ter_adjacent; // Matriz de adjacencia
     
     /* variáveis referentes ao algoritmo genético */
     individuo *populacao;
@@ -43,13 +45,15 @@ int main ()
              &PERIODOS,
              &ESPECIES,
              &TERRENOS,
+             &ADJ_EDGES,
              &area_terreno,
              &temp_proc,
              &familia,
              &demanda,
              &lucrativity,
              &productivity,
-             &per_plantio);
+             &per_plantio,
+             &ter_adjacent);
 
     /*************************** INIT ******************************/
     
@@ -59,12 +63,14 @@ int main ()
         populacao[i] = criarIndividuo(PERIODOS,
                                       ESPECIES,
                                       TERRENOS,
+                                      ADJ_EDGES,
                                       area_terreno,
                                       temp_proc,
                                       familia,
                                       demanda,
                                       lucrativity,
                                       productivity,
+                                      ter_adjacent,
                                       per_plantio,
                                       PERIODOS_ANO);
     }
@@ -83,6 +89,7 @@ int main ()
                    PERIODOS,
                    TERRENOS,
                    ESPECIES,
+                   ADJ_EDGES,
                    PERIODOS_ANO,
                    area_terreno,
                    temp_proc,
@@ -90,6 +97,7 @@ int main ()
                    demanda,
                    lucrativity,
                    productivity,
+                   ter_adjacent,
                    per_plantio);
     
     

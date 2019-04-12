@@ -44,3 +44,4 @@ clean:
 clear:
 	rm -f Run *.o *.gch $(TxtResults)
 	clear
+	clear

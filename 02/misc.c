@@ -47,3 +47,33 @@ double uniforme (double a, double b)
     beta = a + aux*(b - a);
     return beta;
 }
+
+/* ------ */
+/* Retorna o maior valor entre dois inteiros, e o primeiro caso iguais */
+int intMAX (int A,
+            int B)
+{
+    if (A >= B)
+    {
+        return A;
+    }
+    else
+    {
+        return B;
+    }
+}
+
+/* ------ */
+/* Retorna o menor valor entre dois inteiros, e o primeiro caso iguais */
+int intMIN (int A,
+            int B)
+{
+    if (A <= B)
+    {
+        return A;
+    }
+    else
+    {
+        return B;
+    }
+}
