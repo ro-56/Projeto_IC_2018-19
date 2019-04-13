@@ -2,6 +2,19 @@
 #include "genetic.h"
 #include "manipular_indiv.h"
 
+#define N_ATTRIBUTES 4
+/*
+ Matrix [N]x[M]
+ N: Individuos na populacao mista
+ M: Numero de atributos
+    M[i][0] - Origem do Indv. (0:Pai, 1:Filho)
+    M[i][1] - Indice do Indv. na populacao original ([0,1,...,POPULACAO])
+    M[i][2] - Passou p/ a proxima geracao ([0,1])
+    M[i][3] - Funcao Objetivo 1
+    ...
+
+*/
+
 #define PROBABILIDADE_CROSSOVER 0.8
 #define PROBABILIDADE_MUTATION 0.1
 #define DIVISION_PERCENTAGE 0.6
@@ -45,14 +58,18 @@ void runGenerations (int GENERATION,
                                            TERRENOS);
     }
     
-    mista = (individuo *)malloc((2 * POPULACAO) * sizeof(individuo));
+    mista = (int *)malloc((2 * POPULACAO) * sizeof(int));
     for (i = 0; i < 2*POPULACAO; i++)
-    {
-        mista[i].demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
-        
-        mista[i].solucao = alocarSolucao (mista[i].solucao,
-                                          TERRENOS);
-    }
+        mista[i] = (int)malloc(N_ATTRIBUTES * sizeof(int));
+
+//    mista = (individuo *)malloc((2 * POPULACAO) * sizeof(individuo));
+//    for (i = 0; i < 2*POPULACAO; i++)
+//    {
+//        mista[i].demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
+//
+//        mista[i].solucao = alocarSolucao (mista[i].solucao,
+//                                          TERRENOS);
+//    }
     
     indPai1 = (int *)malloc(POPULACAO * sizeof(int));
     indPai2 = (int *)malloc(POPULACAO * sizeof(int));
@@ -142,23 +159,23 @@ void runGenerations (int GENERATION,
         }
         
           /*  Juntar pais e filhos na populacao mista e organiza-la  */
-        mergePopulations (populacao,
-                          filhos,
-                          mista,
-                          POPULACAO,
-                          ESPECIES);
+//        mergePopulations (populacao,
+//                          filhos,
+//                          mista,
+//                          POPULACAO,
+//                          ESPECIES);
         
-        ordenarPopulacao (mista,
-                          2*POPULACAO);
+//        ordenarPopulacao (mista,
+//                          2*POPULACAO);
         
           /*  Criar uma nova populacao com os melhores individuos e organiza-la  */
-        makeNewPopulation (populacao,
-                           mista,
-                           POPULACAO,
-                           ESPECIES);
+//        makeNewPopulation (populacao,
+//                           mista,
+//                           POPULACAO,
+//                           ESPECIES);
 
-        ordenarPopulacao(populacao,
-                         POPULACAO);
+//        ordenarPopulacao(populacao,
+//                         POPULACAO);
         
         /*  Liberar regiao de memoria das populacao ja utilizadas  */
         
@@ -167,11 +184,11 @@ void runGenerations (int GENERATION,
             filhos[i] = clearIndividuo (filhos[i],
                                         ESPECIES);
             
-            mista[i] = clearIndividuo (mista[i],
-                                       ESPECIES);
-            
-            mista[POPULACAO + i] = clearIndividuo (mista[POPULACAO + i],
-                                                   ESPECIES);
+//            mista[i] = clearIndividuo (mista[i],
+//                                       ESPECIES);
+//
+//            mista[POPULACAO + i] = clearIndividuo (mista[POPULACAO + i],
+//                                                   ESPECIES);
         }
 
         /*  Grava funcao objetivo para uso em graficos  */
