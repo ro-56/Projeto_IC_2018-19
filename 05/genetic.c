@@ -1,32 +1,14 @@
 #include "defs.h"
 #include "genetic.h"
 #include "manipular_indiv.h"
+#include "constantes.h"
 
-#define N_ATTRIBUTES 4
-/*
- Matrix [N]x[M]
- N: Individuos na populacao mista
- M: Numero de atributos
-    M[i][0] - Origem do Indv. (0:Pai, 1:Filho)
-    M[i][1] - Indice do Indv. na populacao original ([0,1,...,POPULACAO])
-    M[i][2] - Passou p/ a proxima geracao ([0,1])
-    M[i][3] - Funcao Objetivo 1
-    ... 1000 - f1 para f2
 
-*/
 
-#define PROBABILIDADE_CROSSOVER 0.8
-#define PROBABILIDADE_MUTATION 0.1
-#define DIVISION_PERCENTAGE 0.6
-#define ELITISM_FACTOR 0.05
-
-void runGenerations (int GENERATION,
-                     individuo *populacao,
-                     int POPULACAO,
+void runGenerations (individuo *populacao,
                      int PERIODOS,
                      int TERRENOS,
                      int ESPECIES,
-                     int ADJ_EDGES,
                      int PERIODOS_ANO,
                      int *area_terreno,
                      int *temp_proc,
@@ -34,7 +16,6 @@ void runGenerations (int GENERATION,
                      int *demanda,
                      int *lucrativity,
                      int *productivity,
-                     int **ter_adjacent,
                      int **per_plantio)
 {
  
@@ -44,10 +25,9 @@ void runGenerations (int GENERATION,
                   POPULACAO);
     
     /******** MALLOC ********/
-    int i, j, gen;
+    int i,gen;
     
-    individuo *filhos, pai1, pai2;
-    int **mista;
+    individuo *filhos, *mista, pai1, pai2;
     int *indPai1, *indPai2;
     
     filhos = (individuo *)malloc(POPULACAO * sizeof(individuo));
@@ -59,16 +39,21 @@ void runGenerations (int GENERATION,
                                            TERRENOS);
     }
     
-    mista = (int **)malloc((2 * POPULACAO) * sizeof(int*));
-    for (i = 0; i < (2 * POPULACAO); i++)
-        mista[i] = (int *)calloc(N_ATTRIBUTES, sizeof(int));
+    mista = (individuo *)malloc((2 * POPULACAO) * sizeof(individuo));
+    for (i = 0; i < 2*POPULACAO; i++)
+    {
+        mista[i].demanda_atendida = (int *)calloc(ESPECIES, sizeof(int));
+        
+        mista[i].solucao = alocarSolucao (mista[i].solucao,
+                                          TERRENOS);
+    }
     
     indPai1 = (int *)malloc(POPULACAO * sizeof(int));
     indPai2 = (int *)malloc(POPULACAO * sizeof(int));
     
     /******** GENERATION ********/
     
-    for (gen = 0; gen < GENERATION; gen++)
+    for (gen = 0; gen < GENERATIONS; gen++)
     {
         gerarConjuntoPais (populacao,
                            indPai1,
@@ -91,12 +76,10 @@ void runGenerations (int GENERATION,
                            &filhos[i+1],
                            TERRENOS,
                            ESPECIES,
-                           ADJ_EDGES,
                            area_terreno,
                            demanda,
                            lucrativity,
-                           productivity,
-                           ter_adjacent);
+                           productivity);
             }
             else
             {
@@ -117,14 +100,12 @@ void runGenerations (int GENERATION,
                           TERRENOS,
                           ESPECIES,
                           PERIODOS,
-                          ADJ_EDGES,
                           area_terreno,
                           temp_proc,
                           familia,
                           demanda,
                           lucrativity,
                           productivity,
-                          ter_adjacent,
                           per_plantio,
                           PERIODOS_ANO);
             }
@@ -136,56 +117,51 @@ void runGenerations (int GENERATION,
                           TERRENOS,
                           ESPECIES,
                           PERIODOS,
-                          ADJ_EDGES,
                           area_terreno,
                           temp_proc,
                           familia,
                           demanda,
                           lucrativity,
                           productivity,
-                          ter_adjacent,
                           per_plantio,
                           PERIODOS_ANO);
             }
 
         }
         
-        /*  Juntar pais e filhos na populacao mista e organiza-la  */
+          /*  Juntar pais e filhos na populacao mista e organiza-la  */
         mergePopulations (populacao,
                           filhos,
                           mista,
-                          POPULACAO);
+                          ESPECIES);
         
-        ordenarPopulacaoMistaFObj (mista,
-                                   2*POPULACAO);
+        ordenarPopulacao (mista,
+                          2*POPULACAO);
         
-        /*  Criar uma nova populacao com os melhores individuos e organiza-la  */
+          /*  Criar uma nova populacao com os melhores individuos e organiza-la  */
         makeNewPopulation (populacao,
-                           filhos,
                            mista,
-                           POPULACAO,
                            ESPECIES);
 
-        ordenarPopulacao (populacao,
-                          POPULACAO);
+        ordenarPopulacao(populacao,
+                         POPULACAO);
         
         /*  Liberar regiao de memoria das populacao ja utilizadas  */
+        
         for (i = 0; i < POPULACAO; i++)
         {
             filhos[i] = clearIndividuo (filhos[i],
                                         ESPECIES);
+            
+            mista[i] = clearIndividuo (mista[i],
+                                       ESPECIES);
+            
+            mista[POPULACAO + i] = clearIndividuo (mista[POPULACAO + i],
+                                                   ESPECIES);
         }
-        
-        /* Limpar matriz populacao mista */
-        for (i = 0; i < 2*POPULACAO; i++)
-        {
-            for (j = 0; j < N_ATTRIBUTES; j++)
-            {
-                mista[i][j] = 0;
-            }
-        }
-        
+
         /*  Grava funcao objetivo para uso em graficos  */
+        
         graphBest (populacao[0]);
         
         graphAverage (populacao,
@@ -206,12 +182,10 @@ void crossover (individuo pai1,
                 individuo *filho2,
                 int TERRENOS,
                 int ESPECIES,
-                int ADJ_EDGES,
                 int *area_terreno,
                 int *demanda,
                 int *lucrativity,
-                int *productivity,
-                int **ter_adjacent)
+                int *productivity)
 {
     int division_line = TERRENOS * DIVISION_PERCENTAGE;
 
@@ -261,22 +235,21 @@ void crossover (individuo pai1,
                                                    demanda,
                                                    productivity);
 
+    //TODO: Trocar para uma funcao unica que calcule todos os obj
     /* Calcular funcao objetivo */
-    filho1->f_obj = calculateFObj (filho1->solucao,
-                                   ESPECIES,
-                                   ADJ_EDGES,
-                                   demanda,
-                                   lucrativity,
-                                   ter_adjacent,
-                                   filho1->demanda_atendida);
+    filho1->f_obj[0] = calculateFObj (ESPECIES,
+                                      demanda,
+                                      lucrativity,
+                                      filho1->demanda_atendida);
 
-    filho2->f_obj = calculateFObj (filho2->solucao,
-                                   ESPECIES,
-                                   ADJ_EDGES,
-                                   demanda,
-                                   lucrativity,
-                                   ter_adjacent,
-                                   filho2->demanda_atendida);
+    filho1->f_obj[1] = (int)((1.0 / ((float) filho1->f_obj[0] + 100)) * 10000);
+    
+    filho2->f_obj[0] = calculateFObj (ESPECIES,
+                                      demanda,
+                                      lucrativity,
+                                      filho2->demanda_atendida);
+    
+    filho2->f_obj[1] = (int)((1.0 / ((float) filho2->f_obj[0] + 100)) * 10000);
     
     return;
 }
@@ -318,106 +291,81 @@ int individuoAleatorio (int n)
 
 /* ------ */
 void makeNewPopulation (individuo *new_population,
-                        individuo *filhos,
-                        int **combined_group,
-                        int POPULACAO,
+                        individuo *combined_group,
                         int ESPECIES)
 {
     double *prob;
     prob = (double *)calloc(2 * POPULACAO, sizeof(double));
-
-    int num_elite = POPULACAO * ELITISM_FACTOR;
-    if (num_elite == 0) // Fail-Safe for small population size
-        num_elite = 1;
     
-    int i, j, sum_fobj = 0;
+    int *selected;
+    selected = (int *)calloc(2 * POPULACAO, sizeof(int));
+    
+    int num_elite = POPULACAO * ELITISM_FACTOR;
+    int i, sum_fobj = 0;
     int num_items_selected = num_elite;
     double rand_num;
     
-    /* Separar os melhores individuos */
-    for (i = 0; i < num_elite; i++)
-        combined_group[i][2] = 1;
-
+    /*  Zerar populacao  */
+    for (i = 0; i < POPULACAO; i++)
+    {
+        new_population[i] = clearIndividuo (new_population[i],
+                                            ESPECIES);
+    }
+    
     /*  Calcula a soma da funcao Obj de todos os individuos do grupo  */
     for (i = num_elite; i < 2 * POPULACAO; i++)
     {
-        if (combined_group[i][3] <= 0)
+        if (combined_group[i].f_obj[0] <= 0)
             continue;
-
-        sum_fobj += combined_group[i][3];
+        
+        sum_fobj += combined_group[i].f_obj[0];
     }
-
-    /* Calcular a probabilidade de cada individuo ser escolhido */
-    for (i = 0; i < 2 * POPULACAO; i++) // Redundante
-        prob[i] = 0;
     
-    for (i = num_elite; i < 2 * POPULACAO; i++)
+    
+    for (i = 0; i < 2 * POPULACAO; i++)
     {
-        if (combined_group[i][3] <= 0)
+        /*  Se o individuo for um dos melhores (elite), copiar o individuo  */
+        /*  Se nao for, individuo tera uma probabilidade de ser escolhido baseado em sua FObj  */
+        if (i < num_elite)
         {
-            prob[i] = prob[i-1];
+            selected[i] = 1;
+            copyIndividuo(combined_group[i],
+                          &new_population[i],
+                          ESPECIES);
         }
         else
         {
-            prob[i] = prob[i-1] + ((double)combined_group[i][3] / (double)sum_fobj);
+            if (combined_group[i].f_obj[0] <= 0)
+            {
+                prob[i] = prob[i-1];
+            }
+            else
+            {
+                prob[i] = prob[i-1] + ((double)combined_group[i].f_obj[0] / (double)sum_fobj);
+            }
         }
     }
-
-    /* Selecionar os individuos baseado na probabilidade calculada */
-        //TODO: Colocar outro modo de selecionar caso passe de X iteracoes
+    
     while (num_items_selected < POPULACAO)
     {
         rand_num = uniforme(0,1);
-
+        
         for (i = num_elite; i < 2 * POPULACAO; i++)
             if (prob[i-1] <= rand_num && rand_num < prob[i])
                 break;
         
-        if (combined_group[i][2])
+        if (selected[i])
             continue;
-
-        combined_group[i][2] = 1;
-
+        
+        copyIndividuo (combined_group[i],
+                       &new_population[num_items_selected],
+                       ESPECIES);
+        
         num_items_selected++;
     }
-
-    /* Limpar a populacao nova nos indices nao escolhidos */
-    int *pop_cleared = (int *)calloc(POPULACAO, sizeof(int));
     
-    for (i = 0; i < 2 * POPULACAO; i++)
-    {
-        if (!combined_group[i][2] && !combined_group[i][0])
-        {
-            int idx = combined_group[i][1];
-            
-            pop_cleared[idx] = 1;
-            
-            new_population[idx] = clearIndividuo (new_population[idx],
-                                                  ESPECIES);
-        }
-    }
-    /* Copiar os individuos para a nova populacao */
-    for (i = 0; i < 2 * POPULACAO; i++)
-    {
-        if (combined_group[i][2] && combined_group[i][0])
-        {
-            int idx = combined_group[i][1];
-
-            for (j = 0; j < POPULACAO; j++)
-            {
-                if (pop_cleared[j])
-                {
-                    pop_cleared[j] = 0;
-
-                    copyIndividuo (filhos[idx],
-                                   &(new_population[j]),
-                                   ESPECIES);
-
-                    break;
-                }
-            }
-        }
-    }
+    free(prob);
+    free(selected);
     
     return;
 }
@@ -425,41 +373,23 @@ void makeNewPopulation (individuo *new_population,
 /* ------ */
 void mergePopulations (individuo *group_A,
                        individuo *group_B,
-                       int **combined_group,
-                       int POPULACAO)
+                       individuo *combined_group,
+                       int ESPECIES)
 {
-//M[i][0] - Origem do Indv. (0:Pai, 1:Filho)
-//M[i][1] - Indice do Indv. na populacao original ([0,1,...,POPULACAO])
-//M[i][2] - Passou p/ a proxima geracao ([0,1])
-//M[i][3] - Funcao Objetivo 1
-    
-    int i;
+    int i,k;
     
     for (i = 0; i < POPULACAO; i++)
     {
-        /* Passar Pais */
-        combined_group[i][0] = 0;
-
-        combined_group[i][1] = i;
-
-        combined_group[i][2] = 0; // Redundante
-
-        combined_group[i][3] = group_A[i].f_obj;
+        copyIndividuo (group_A[i],
+                       &combined_group[i],
+                       ESPECIES);
     }
-    
-    for (i = POPULACAO; i < 2*POPULACAO; i++)
+    for (i = 0, k = POPULACAO; i < POPULACAO; i++, k++)
     {
-        /* Passar Filhos */
-        combined_group[i][0] = 1;
-        
-        combined_group[i][1] = i - POPULACAO;
-        
-        combined_group[i][2] = 0; // Redundante
-        
-        combined_group[i][3] = group_B[i - POPULACAO].f_obj;
+        copyIndividuo (group_B[i],
+                       &combined_group[k],
+                       ESPECIES);
     }
-
-    return;
 }
 
 /* ------ */
@@ -467,14 +397,12 @@ void mutation (individuo *indiv,
                int TERRENOS,
                int ESPECIES,
                int PERIODOS,
-               int ADJ_EDGES,
                int *area_terreno,
                int *temp_proc,
                int *familia,
                int *demanda,
                int *lucrativity,
                int *productivity,
-               int **ter_adjacent,
                int **per_plantio,
                int PERIODOS_ANO)
 {
@@ -519,21 +447,19 @@ void mutation (individuo *indiv,
                                                   productivity);
     
     /* Calcular funcao objetivo */
-    indiv->f_obj = calculateFObj (indiv->solucao,
-                                  ESPECIES,
-                                  ADJ_EDGES,
+    indiv->f_obj[0] = calculateFObj (ESPECIES,
                                   demanda,
                                   lucrativity,
-                                  ter_adjacent,
                                   indiv->demanda_atendida);
     
     return;
 }
+
 /* ------ */
 individuo torneio (individuo pai1,
                    individuo pai2)
 {
-    int aux = pai1.f_obj - pai2.f_obj;
+    int aux = pai1.f_obj[0] - pai2.f_obj[0];
     
     if (aux < 0) //p1 < p2
     {
@@ -557,6 +483,3 @@ individuo torneio (individuo pai1,
 }
 
 /* ------ */
-
-
-    //TODO: Pos otimizacao de terrenos adcionando adubacao verde em periodos ociosos, influenciando lucratividade e nutrientes.

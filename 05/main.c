@@ -1,10 +1,8 @@
 #include <time.h>
 #include <sys/time.h>
 #include "defs.h"
+#include "constantes.h"
 
-#define MICRO_PER_SECOND 1000000
-#define POPULACAO 100
-#define GENERATIONS 10
 
 int main ()
 {
@@ -13,7 +11,6 @@ int main ()
     int ESPECIES;
     int TERRENOS;
     int PERIODOS_ANO;
-    int ADJ_EDGES;
     
     int *area_terreno;
     int *temp_proc;
@@ -23,7 +20,6 @@ int main ()
     int *lucrativity;
     
     int **per_plantio;  // intervalos de plantio [Ei,Ti]
-    int **ter_adjacent; // Matriz de adjacencia
     
     /* variáveis referentes ao algoritmo genético */
     individuo *populacao;
@@ -45,15 +41,13 @@ int main ()
              &PERIODOS,
              &ESPECIES,
              &TERRENOS,
-             &ADJ_EDGES,
              &area_terreno,
              &temp_proc,
              &familia,
              &demanda,
              &lucrativity,
              &productivity,
-             &per_plantio,
-             &ter_adjacent);
+             &per_plantio);
 
     /*************************** INIT ******************************/
     
@@ -63,14 +57,12 @@ int main ()
         populacao[i] = criarIndividuo(PERIODOS,
                                       ESPECIES,
                                       TERRENOS,
-                                      ADJ_EDGES,
                                       area_terreno,
                                       temp_proc,
                                       familia,
                                       demanda,
                                       lucrativity,
                                       productivity,
-                                      ter_adjacent,
                                       per_plantio,
                                       PERIODOS_ANO);
     }
@@ -83,13 +75,10 @@ int main ()
     /*************************** GENETICO ******************************/
     
 
-    runGenerations(GENERATIONS,
-                   populacao,
-                   POPULACAO,
+    runGenerations(populacao,
                    PERIODOS,
                    TERRENOS,
                    ESPECIES,
-                   ADJ_EDGES,
                    PERIODOS_ANO,
                    area_terreno,
                    temp_proc,
@@ -97,7 +86,6 @@ int main ()
                    demanda,
                    lucrativity,
                    productivity,
-                   ter_adjacent,
                    per_plantio);
     
     

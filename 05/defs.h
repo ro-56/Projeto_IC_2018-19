@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+//#include <math.h>
 //#include <string.h>
 //#include <malloc/malloc.h>
 //#include <malloc.h>
@@ -27,7 +27,7 @@ typedef struct plots
 
 typedef struct individuo
 {
-    int f_obj;
+    int *f_obj;
     int *demanda_atendida;
     struct plots* solucao;
 } individuo;
@@ -39,49 +39,39 @@ void lerDados (int *PERIODOS_ANO,
                int *PERIODOS,
                int *ESPECIES,
                int *TERRENOS,
-               int *ADJ_EDGES,
                int **area_terreno,
                int **temp_proc,
                int **familia,
                int **demanda,
                int **lucrativity,
                int **productivity,
-               int ***per_plantio,
-               int ***ter_adjacent);
+               int ***per_plantio);
 
 
 /*** INDIVIDUO ***/
 
-int calculateFObj (plot *solucao,
-                   int ESPECIES,
-                   int ADJ_EDGES,
+int calculateFObj (int ESPECIES,
                    int *demanda,
                    int *lucrativity,
-                   int **ter_adjacent,
                    int *demanda_atendida);
 
 individuo criarIndividuo(int PERIODOS,
                          int ESPECIES,
                          int TERRENOS,
-                         int ADJ_EDGES,
                          int *area_terreno,
                          int *temp_proc,
                          int *familia,
                          int *demanda,
                          int *lucrativity,
                          int *productivity,
-                         int **ter_adjacent,
                          int **per_plantio,
                          int PERIODOS_ANO);
 /*** GENETICO ***/
 
-void runGenerations (int GENERATION,
-                     individuo *populacao,
-                     int POPULACAO,
+void runGenerations (individuo *populacao,
                      int PERIODOS,
                      int TERRENOS,
                      int ESPECIES,
-                     int ADJ_EDGES,
                      int PERIODOS_ANO,
                      int *area_terreno,
                      int *temp_proc,
@@ -89,30 +79,17 @@ void runGenerations (int GENERATION,
                      int *demanda,
                      int *lucrativity,
                      int *productivity,
-                     int **ter_adjacent,
                      int **per_plantio);
 
 /*** MISC ***/
 int compararIndividuos (const void *i,
                         const void *j);
 
-int compararIndividuosPMistaFObj (const void *i,
-                                  const void *j);
-
 int inteiro (int a,
              int b);
 
-int intMAX (int A,
-            int B);
-
-int intMIN (int A,
-            int B);
-
 void ordenarPopulacao (individuo *populacao,
-                       int POPULACAO);
-
-void ordenarPopulacaoMistaFObj (int **populacao,
-                                int POPULACAO);
+                       int size);
 
 double uniforme (double a,
                  double b);
@@ -134,6 +111,6 @@ void printTerrenos (plot *t);
 void graphBest (individuo indiv);
 
 void graphAverage (individuo *group,
-                   int POPULACAO);
+                   int size);
 
 void resetTxt();

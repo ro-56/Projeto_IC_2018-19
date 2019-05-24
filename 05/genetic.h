@@ -5,12 +5,10 @@ void crossover (individuo pai1,
                 individuo *filho2,
                 int TERRENOS,
                 int ESPECIES,
-                int ADJ_EDGES,
                 int *area_terreno,
                 int *demanda,
                 int *lucrativity,
-                int *productivity,
-                int **ter_adjacent);
+                int *productivity);
 
 void gerarConjuntoPais (individuo *populacao,
                         int *indPai1,
@@ -20,28 +18,24 @@ void gerarConjuntoPais (individuo *populacao,
 int individuoAleatorio (int n);
 
 void makeNewPopulation (individuo *new_population,
-                        individuo *filhos,
-                        int **combined_group,
-                        int POPULACAO,
+                        individuo *combined_group,
                         int ESPECIES);
 
 void mergePopulations (individuo *group_A,
                        individuo *group_B,
-                       int **combined_group,
-                       int POPULACAO);
+                       individuo *combined_group,
+                       int ESPECIES);
 
 void mutation (individuo *indiv,
                int TERRENOS,
                int ESPECIES,
                int PERIODOS,
-               int ADJ_EDGES,
                int *area_terreno,
                int *temp_proc,
                int *familia,
                int *demanda,
                int *lucrativity,
                int *productivity,
-               int **ter_adjacent,
                int **per_plantio,
                int PERIODOS_ANO);
 
